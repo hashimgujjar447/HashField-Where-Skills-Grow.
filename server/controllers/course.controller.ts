@@ -116,7 +116,7 @@ export const getSingleCourse = asyncErrorHandler(
       return next(new ErrorHandler("Course not found", 404));
     }
 
-    await redis.set(courseId, JSON.stringify(course));
+    await redis.set(courseId, JSON.stringify(course), "EX", 604800);
 
     return res.status(200).json({
       success: true,
@@ -142,7 +142,7 @@ export const getAllCourses = asyncErrorHandler(
       "-courseData.videoUrl -courseData.videoPlayer -courseData.videoLength -courseData.suggestions -courseData.questions -courseData.links",
     );
 
-    await redis.set("allCourses", JSON.stringify(courses));
+    await redis.set("allCourses", JSON.stringify(courses), "EX", 3600);
 
     return res.status(200).json({
       success: true,
