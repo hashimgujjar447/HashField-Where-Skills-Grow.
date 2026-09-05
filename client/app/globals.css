@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+/* Tailwind v4: class-based dark mode for next-themes */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Fonts — next/font injects the actual CSS var; we map it here for Tailwind utilities */
+  --font-family-poppins: var(--font-poppins), sans-serif;
+  --font-family-josefin: var(--font-josefin), sans-serif;
+
+  --background-image-radial-gradient: radial-gradient(var(--tw-gradient-stops));
+  --background-image-conic-gradient: conic-gradient(
+    from 180deg at 50% 50%,
+    var(--tw-gradient-stops)
+  );
+
+  /* Breakpoint names must not contain special chars in Tailwind v4 */
+  --breakpoint-xs: 400px;
+  --breakpoint-md2: 800px;
+  --breakpoint-lg2: 1000px;
+  --breakpoint-lg3: 1100px;
+  --breakpoint-xl2: 1200px;
+  --breakpoint-xl3: 1300px;
+  --breakpoint-2xl2: 1500px;
+}
+.hero_animation {
+  background-image: linear-gradient(
+    147.92deg,
+    hsl(239, 76%, 53%, 0.456) 10.41%,
+    hsl(0, 0%, 100%, 0) 89.25%
+  );
+  animation: changeBackgroundColor 8s infinite alternate;
+  -webkit-animation: changeBackgroundColor 8s infinite alternate;
+}
+
+@keyframes changeBackgroundColor {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  16.67% {
+    opacity: 0.9;
+  }
+
+  33.33% {
+    opacity: 0.8;
+  }
+
+  50% {
+    opacity: 0.6;
+  }
+
+  66.67% {
+    opacity: 0.5;
+  }
+
+  83.33% {
+    opacity: 0.4;
+  }
+}
