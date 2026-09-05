@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>New Reply to Your Question</title>
+
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #f4f7fb;
+        font-family: Arial, Helvetica, sans-serif;
+        color: #333333;
+      }
+
+      .email-wrapper {
+        width: 100%;
+        padding: 40px 20px;
+      }
+
+      .email-container {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      }
+
+      .email-header {
+        padding: 25px 30px;
+        background-color: #111827;
+        text-align: center;
+      }
+
+      .email-header h1 {
+        margin: 0;
+        color: #ffffff;
+        font-size: 24px;
+      }
+
+      .email-body {
+        padding: 35px 30px;
+      }
+
+      .email-body h2 {
+        margin-top: 0;
+        color: #111827;
+        font-size: 20px;
+      }
+
+      .email-body p {
+        margin: 15px 0;
+        font-size: 15px;
+        line-height: 1.7;
+        color: #555555;
+      }
+
+      .course-box {
+        margin: 25px 0;
+        padding: 18px 20px;
+        background-color: #f3f4f6;
+        border-left: 4px solid #111827;
+        border-radius: 6px;
+      }
+
+      .course-box p {
+        margin: 0;
+        color: #111827;
+        font-weight: 600;
+      }
+
+      .email-footer {
+        padding: 20px 30px;
+        background-color: #f9fafb;
+        text-align: center;
+        border-top: 1px solid #eeeeee;
+      }
+
+      .email-footer p {
+        margin: 0;
+        font-size: 13px;
+        line-height: 1.6;
+        color: #888888;
+      }
+
+      @media only screen and (max-width: 600px) {
+        .email-wrapper {
+          padding: 20px 10px;
+        }
+
+        .email-body {
+          padding: 25px 20px;
+        }
+
+        .email-header {
+          padding: 20px;
+        }
+
+        .email-footer {
+          padding: 20px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="email-wrapper">
+      <div class="email-container">
+        <div class="email-header">
+          <h1>New Reply to Your Question</h1>
+        </div>
+
+        <div class="email-body">
+          <h2>Hello <%= name %>,</h2>
+
+          <p>A new reply has been added to your question in your course.</p>
+
+          <div class="course-box">
+            <p><%= title %></p>
+          </div>
+
+          <p>
+            Log in to your account to view the reply and continue the
+            discussion.
+          </p>
+
+          <p>Thank you for being part of our learning community!</p>
+        </div>
+
+        <div class="email-footer">
+          <p>
+            Best regards,<br />
+            LMS Team
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
