@@ -8,7 +8,12 @@ import sendMail from "../utils/sendMail.js";
 import { sendToken } from "../utils/jwt.js";
 import { redis } from "../utils/redis.js";
 import { type ITokenOptions } from "../utils/jwt.js";
-import { getUserById } from "../services/user.service.js";
+import {
+  deleteUserById,
+  getUserById,
+  getUsers,
+  updateRole,
+} from "../services/user.service.js";
 import { v2 as cloudinary } from "cloudinary";
 
 interface IRegistrationBody {
@@ -447,6 +452,49 @@ export const updateUserAvatar = asyncErrorHandler(
     } catch (error) {
       console.log(error);
       return next(new ErrorHandler("Failed to update avatar", 500));
+    }
+  },
+);
+
+export const getAllUsers = asyncErrorHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      await getUsers(res);
+    } catch (error) {
+      return next(new ErrorHandler("Failed to get all users", 500));
+    }
+  },
+);
+
+// Update user role -- Only for admin
+export const updateUserRole = asyncErrorHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { id, role } = req.body;
+
+      if (!id || !role) {
+        return next(new ErrorHandler("Please provide user ID and role", 400));
+      }
+
+      await updateRole(res, id, role);
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  },
+);
+
+export const deleteUser = asyncErrorHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { id } = req.params;
+
+      if (!id || Array.isArray(id)) {
+        return next(new ErrorHandler("Please provide user ID", 400));
+      }
+
+      await deleteUserById(res, id);
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 500));
     }
   },
 );

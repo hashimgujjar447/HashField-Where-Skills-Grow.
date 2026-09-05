@@ -19,6 +19,8 @@ import userRouter from "./routes/user.route.js";
 import courseRouter from "./routes/course.route.js";
 import orderRouter from "./routes/order.route.js";
 import notificationRouter from "./routes/notification.route.js";
+import analyticsRouter from "./routes/analytics.route.js";
+import layoutRouter from "./routes/layout.route.js";
 
 // body parser
 
@@ -41,7 +43,8 @@ app.use("/api/v1", userRouter);
 app.use("/api/v1", courseRouter);
 app.use("/api/v1", orderRouter);
 app.use("/api/v1", notificationRouter);
-
+app.use("/api/v1", analyticsRouter);
+app.use("/api/v1", layoutRouter);
 app.get("/test", (req: Request, res: Response) => {
   res.status(200).json({
     message: "Api is working",

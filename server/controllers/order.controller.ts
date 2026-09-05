@@ -5,7 +5,7 @@ import User from "../models/user.model.js";
 import sendMail from "../utils/sendMail.js";
 import Course from "../models/course.model.js";
 import ErrorHandler from "../utils/ErrorHandler.js";
-import { newOrder } from "../services/order.service.js";
+import { getOrders, newOrder } from "../services/order.service.js";
 import { Notification } from "../models/notification.model.js";
 
 export const createOrder = asyncErrorHandler(
@@ -79,5 +79,16 @@ export const createOrder = asyncErrorHandler(
       message: "Order created successfully",
       order,
     });
+  },
+);
+
+// get all orders -- Only for admin
+export const getAllOrders = asyncErrorHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      await getOrders(res);
+    } catch (error) {
+      return next(new ErrorHandler("Failed to get all orders", 500));
+    }
   },
 );

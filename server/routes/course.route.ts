@@ -9,6 +9,8 @@ import {
   addQuestionAnswer,
   addReview,
   addReplyToReview,
+  getAllCoursesForAdmin,
+  deleteCourse,
 } from "../controllers/course.controller.js";
 import {
   authorizeRoles,
@@ -36,7 +38,19 @@ router.get("/get-course/:id", getSingleCourse);
 router.get("/get-course-content/:id", isAuthenticated, getCourseByUser);
 router.post("/add-question", isAuthenticated, addQuestion);
 router.post("/add-question-answer", isAuthenticated, addQuestionAnswer);
-router.post("/add-review/:id", isAuthenticated, addReview);
+router.post("/add-review/:courseId", isAuthenticated, addReview);
 router.post("/add-reply-to-review", isAuthenticated, addReplyToReview);
+router.get(
+  "/get-all-courses-for-admin",
+  isAuthenticated,
+  authorizeRoles("admin"),
+  getAllCoursesForAdmin,
+);
 
+router.delete(
+  "/delete-course/:id",
+  isAuthenticated,
+  authorizeRoles("admin"),
+  deleteCourse,
+);
 export default router;

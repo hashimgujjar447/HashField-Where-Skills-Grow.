@@ -1,9 +1,9 @@
-import {
-  getNotifications,
-  updateNotificationStatus,
-} from "../controllers/notification.controller.js";
-
 import { Router } from "express";
+import {
+  createLayout,
+  editLayout,
+  getLayoutByType,
+} from "../controllers/layout.controller.js";
 import {
   authorizeRoles,
   isAuthenticated,
@@ -11,18 +11,18 @@ import {
 
 const router = Router();
 
-router.get(
-  "/get-all-notifications",
+router.post(
+  "/create-layout",
   isAuthenticated,
   authorizeRoles("admin"),
-  getNotifications,
+  createLayout,
 );
-
 router.put(
-  "/update-notification-status/:id",
+  "/edit-layout",
   isAuthenticated,
   authorizeRoles("admin"),
-  updateNotificationStatus,
+  editLayout,
 );
+router.get("/get-layout", getLayoutByType);
 
 export default router;
