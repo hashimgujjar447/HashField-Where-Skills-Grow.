@@ -1,25 +1,8 @@
 import { api } from "./api";
-
-interface Course {
-  _id: string;
-  title: string;
-  description: string;
-  price: number;
-  estimatedPrice?: number;
-  thumbnail?: {
-    public_id: string;
-    url: string;
-  };
-  tags: string[];
-  level: string;
-  ratings: number;
-  purchased: number;
-}
-
-interface GetAllCoursesResponse {
-  success: boolean;
-  courses: Course[];
-}
+import {
+  GetAllCoursesResponse,
+  GetSingleCourseResponse,
+} from "@/app/types/course";
 
 const courseApi = api.injectEndpoints({
   endpoints: (builder) => ({
@@ -27,7 +10,13 @@ const courseApi = api.injectEndpoints({
       query: () => "/get-all-courses",
       providesTags: ["Course"],
     }),
+
+    getSingleCourseWithOutAuth: builder.query<GetSingleCourseResponse, string>({
+      query: (courseId: string) => `/get-course/${courseId}`,
+      providesTags: ["Course"],
+    }),
   }),
 });
 
-export const { useGetAllCoursesQuery } = courseApi;
+export const { useGetAllCoursesQuery, useGetSingleCourseWithOutAuthQuery } =
+  courseApi;

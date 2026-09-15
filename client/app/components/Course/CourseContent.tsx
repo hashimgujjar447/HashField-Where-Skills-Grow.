@@ -1,107 +1,83 @@
 ﻿"use client";
 
 import React, { useState } from "react";
-import { HiOutlineChevronDown, HiOutlinePlay, HiOutlineLockClosed } from "react-icons/hi";
-
-export interface Lesson {
-  title: string;
-  duration: string;
-  isPreview?: boolean;
-}
-
-export interface CourseSection {
-  title: string;
-  lessons: Lesson[];
-}
+import { HiOutlineChevronDown, HiOutlinePlay } from "react-icons/hi";
+import { ICourseDataPreview } from "@/app/types/course";
 
 interface Props {
-  courseData: CourseSection[];
+  courseData: ICourseDataPreview[];
 }
 
 const CourseContent: React.FC<Props> = ({ courseData }) => {
-  const [openSections, setOpenSections] = useState<number[]>([0]);
+  const [openSection, setOpenSection] = useState<string | null>(
+    courseData[0]?._id || null,
+  );
 
-  const toggleSection = (index: number) => {
-    if (openSections.includes(index)) {
-      setOpenSections(openSections.filter((i) => i !== index));
-    } else {
-      setOpenSections([...openSections, index]);
-    }
-  };
+  if (courseData.length === 0) {
+    return (
+      <div className="rounded-xl border border-gray-200 bg-gray-50 p-6 text-sm text-gray-500 dark:border-gray-800 dark:bg-[#1a1d2e] dark:text-gray-400">
+        No course content available.
+      </div>
+    );
+  }
 
   return (
-    <div className="w-full space-y-3 font-Poppins">
-      <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 pb-2">
-        <span>{courseData.length} sections &bull; {courseData.reduce((acc, s) => acc + s.lessons.length, 0)} lectures</span>
-        <button
-          onClick={() => {
-            if (openSections.length === courseData.length) {
-              setOpenSections([]);
-            } else {
-              setOpenSections(courseData.map((_, i) => i));
-            }
-          }}
-          className="text-[#39c1f3] font-medium hover:underline cursor-pointer"
-        >
-          {openSections.length === courseData.length ? "Collapse all" : "Expand all"}
-        </button>
-      </div>
+    <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-800">
+      {courseData.map((content, index) => {
+        const isOpen = openSection === content._id;
 
-      {courseData.map((section, sIndex) => {
-        const isOpen = openSections.includes(sIndex);
         return (
           <div
-            key={sIndex}
-            className="border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden bg-white dark:bg-[#1a1d2e]"
+            key={content._id}
+            className="border-b border-gray-200 last:border-b-0 dark:border-gray-800"
           >
             <button
-              onClick={() => toggleSection(sIndex)}
-              className="w-full flex items-center justify-between p-4 text-left bg-gray-50 dark:bg-[#151824] hover:bg-gray-100 dark:hover:bg-[#1c2033] transition-colors cursor-pointer"
+              type="button"
+              onClick={() => setOpenSection(isOpen ? null : content._id)}
+              className="flex w-full items-center justify-between gap-4 bg-gray-50 px-5 py-4 text-left transition-colors hover:bg-gray-100 dark:bg-[#1a1d2e] dark:hover:bg-gray-800"
             >
-              <div className="flex items-center gap-3">
-                <HiOutlineChevronDown
-                  className={`text-gray-500 transition-transform duration-200 ${
-                    isOpen ? "rotate-180" : ""
-                  }`}
-                  size={18}
-                />
-                <span className="text-sm font-semibold text-gray-900 dark:text-white">
-                  Section {sIndex + 1}: {section.title}
+              <div className="flex min-w-0 items-center gap-3">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#39c1f3]/10 text-xs font-semibold text-[#39c1f3]">
+                  {index + 1}
                 </span>
+
+                <div className="min-w-0">
+                  <h3 className="truncate text-sm font-semibold text-gray-900 dark:text-white">
+                    {content.title}
+                  </h3>
+
+                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                    {content.videoSection}
+                  </p>
+                </div>
               </div>
-              <span className="text-xs text-gray-500 dark:text-gray-400">
-                {section.lessons.length} lessons
-              </span>
+
+              <HiOutlineChevronDown
+                size={18}
+                className={`shrink-0 text-gray-500 transition-transform duration-200 ${
+                  isOpen ? "rotate-180" : ""
+                }`}
+              />
             </button>
 
             {isOpen && (
-              <div className="divide-y divide-gray-100 dark:divide-gray-800/60">
-                {section.lessons.map((lesson, lIndex) => (
-                  <div
-                    key={lIndex}
-                    className="flex items-center justify-between p-3.5 px-5 hover:bg-gray-50 dark:hover:bg-[#181c2b] transition-colors text-xs text-gray-700 dark:text-gray-300"
-                  >
-                    <div className="flex items-center gap-3">
-                      {lesson.isPreview ? (
-                        <HiOutlinePlay className="text-[#39c1f3]" size={16} />
-                      ) : (
-                        <HiOutlineLockClosed className="text-gray-400" size={16} />
-                      )}
-                      <span className={lesson.isPreview ? "font-medium text-gray-900 dark:text-white" : ""}>
-                        {lesson.title}
-                      </span>
-                    </div>
+              <div className="bg-white px-5 pb-5 pt-3 dark:bg-[#111827]">
+                <div className="flex items-start gap-3 rounded-lg border border-gray-200 p-4 dark:border-gray-800">
+                  <HiOutlinePlay
+                    size={18}
+                    className="mt-0.5 shrink-0 text-[#39c1f3]"
+                  />
 
-                    <div className="flex items-center gap-3">
-                      {lesson.isPreview && (
-                        <span className="px-2 py-0.5 text-[10px] font-semibold bg-[#39c1f3]/10 text-[#39c1f3] rounded border border-[#39c1f3]/20">
-                          Preview
-                        </span>
-                      )}
-                      <span className="text-gray-400">{lesson.duration}</span>
-                    </div>
+                  <div>
+                    <p className="text-xs leading-relaxed text-gray-600 dark:text-gray-300 sm:text-sm">
+                      {content.description}
+                    </p>
+
+                    <p className="mt-2 text-xs text-gray-400">
+                      Preview content
+                    </p>
                   </div>
-                ))}
+                </div>
               </div>
             )}
           </div>

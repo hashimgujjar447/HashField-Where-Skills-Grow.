@@ -38,7 +38,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           enableSystem
           disableTransitionOnChange
         >
-          \<ReduxProvider>{children}</ReduxProvider>
+          <ReduxProvider>{children}</ReduxProvider>
         </ThemeProvider>
       </body>
     </html>

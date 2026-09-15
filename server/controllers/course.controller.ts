@@ -87,6 +87,7 @@ export const editCourse = asyncErrorHandler(
 export const getSingleCourse = asyncErrorHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const courseId = req.params.id;
+    console.log(courseId);
 
     if (typeof courseId !== "string") {
       return res.status(400).json({
@@ -100,6 +101,7 @@ export const getSingleCourse = asyncErrorHandler(
     }
 
     const isCachedExist = await redis.get(courseId);
+    console.log(isCachedExist);
 
     if (isCachedExist) {
       return res.status(200).json({
@@ -111,6 +113,8 @@ export const getSingleCourse = asyncErrorHandler(
     const course = await Course.findById(courseId).select(
       "-courseData.videoUrl -courseData.videoPlayer -courseData.videoLength -courseData.suggestions -courseData.questions -courseData.links",
     );
+
+    console.log(course);
 
     if (!course) {
       return next(new ErrorHandler("Course not found", 404));

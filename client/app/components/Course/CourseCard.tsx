@@ -4,26 +4,15 @@ import React from "react";
 import Link from "next/link";
 import { AiFillStar } from "react-icons/ai";
 import { HiOutlineUsers, HiOutlinePlay } from "react-icons/hi";
+import { ICourseCard } from "@/app/types/course";
 
-export interface CourseCardProps {
-  id: string;
-  title: string;
-  rating: number;
-  students: number;
-  price: number;
-  originalPrice?: number;
-  level: string;
-  tags: string[];
-  thumbnail?: string;
-}
-
-const CourseCard: React.FC<CourseCardProps> = ({
-  id,
+const CourseCard: React.FC<ICourseCard> = ({
+  _id,
   title,
-  rating,
-  students,
+  ratings,
+  purchased,
   price,
-  originalPrice,
+  estimatedPrice,
   level,
   tags,
   thumbnail,
@@ -43,7 +32,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
 
   return (
     <Link
-      href={`/courses/${id}`}
+      href={`/courses/${_id}`}
       className="group flex flex-col overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl dark:border-gray-800 dark:bg-[#1a1d2e]"
     >
       <div
@@ -51,7 +40,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
         style={
           thumbnail
             ? {
-                backgroundImage: `url(${thumbnail})`,
+                backgroundImage: `url(${thumbnail.url})`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
               }
@@ -85,7 +74,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
         <div className="mb-4 flex items-center justify-between border-b border-gray-100 pb-4 text-xs text-gray-500 dark:border-gray-800 dark:text-gray-400">
           <div className="flex items-center gap-1.5">
             <span className="font-bold text-amber-500">
-              {rating.toFixed(1)}
+              {ratings.toFixed(1)}
             </span>
 
             <div className="flex">
@@ -94,7 +83,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
                   key={i}
                   size={14}
                   className={
-                    i < Math.floor(rating)
+                    i < Math.floor(ratings)
                       ? "text-amber-400"
                       : "text-gray-300 dark:text-gray-700"
                   }
@@ -105,7 +94,7 @@ const CourseCard: React.FC<CourseCardProps> = ({
 
           <div className="flex items-center gap-1">
             <HiOutlineUsers size={15} />
-            <span>{students.toLocaleString()} students</span>
+            <span>{purchased.toLocaleString()} students</span>
           </div>
         </div>
 
@@ -115,9 +104,9 @@ const CourseCard: React.FC<CourseCardProps> = ({
               {price === 0 ? "Free" : `$${price}`}
             </span>
 
-            {originalPrice && originalPrice > price && (
+            {estimatedPrice && estimatedPrice > price && (
               <span className="ml-2 text-xs text-gray-400 line-through">
-                ${originalPrice}
+                ${estimatedPrice}
               </span>
             )}
           </div>
