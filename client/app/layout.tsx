@@ -4,6 +4,8 @@ import "./globals.css";
 import { ThemeProvider } from "./utils/theme-provider";
 import type { ReactNode } from "react";
 
+import ReduxProvider from "./redux/services/provider";
+
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -29,14 +31,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       suppressHydrationWarning
       className={`${poppins.variable} ${josefin.variable}`}
     >
-      <body className="min-h-screen bg-white text-black duration-300 dark:bg-black dark:text-white">
+      <body className="min-h-screen bg-no-repeat bg-white text-black duration-300 dark:bg-black dark:text-white">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          \<ReduxProvider>{children}</ReduxProvider>
         </ThemeProvider>
       </body>
     </html>
