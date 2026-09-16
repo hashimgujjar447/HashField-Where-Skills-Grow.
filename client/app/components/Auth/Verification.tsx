@@ -1,7 +1,10 @@
 ﻿"use client";
 
+import { useActivationMutation } from "@/app/redux/features/auth/authApi";
 import React, { FC, useState, useEffect, useRef } from "react";
+import toast from "react-hot-toast";
 import { VscWorkspaceTrusted } from "react-icons/vsc";
+import { useSelector } from "react-redux";
 
 interface Props {
   setRoute?: (route: string) => void;
@@ -9,9 +12,28 @@ interface Props {
 }
 
 const Verification: FC<Props> = ({ setRoute, setOpen }) => {
-  const [digits, setDigits] = useState<string[]>(["", "", "", "", "", ""]);
+  const [digits, setDigits] = useState<string[]>(["", "", "", ""]);
   const [timer, setTimer] = useState<number>(60);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const { token } = useSelector((state: unknown) => state.auth);
+
+  const [activation, { isSuccess, error }] = useActivationMutation();
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Account activated successfully");
+      setRoute?.("Login");
+    }
+
+    if (error) {
+      if ("data" in error) {
+        const errData = error.data as { message: string };
+        toast.error(errData.message || "Activation failed");
+      } else {
+        toast.error("Activation failed");
+      }
+    }
+  }, [isSuccess, setRoute, error]);
 
   useEffect(() => {
     if (timer > 0) {
@@ -26,12 +48,15 @@ const Verification: FC<Props> = ({ setRoute, setOpen }) => {
     newDigits[index] = val;
     setDigits(newDigits);
 
-    if (val && index < 5) {
+    if (val && index < 3) {
       inputRefs.current[index + 1]?.focus();
     }
   };
 
-  const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (
+    index: number,
+    e: React.KeyboardEvent<HTMLInputElement>,
+  ) => {
     if (e.key === "Backspace" && !digits[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
@@ -39,7 +64,17 @@ const Verification: FC<Props> = ({ setRoute, setOpen }) => {
 
   const handleVerify = (e: React.FormEvent) => {
     e.preventDefault();
-    if (setRoute) setRoute("Login");
+    const verificationCode = digits.join("");
+
+    if (verificationCode.length !== 4) {
+      toast.error("Please enter a valid 4-digit verification code");
+      return;
+    }
+
+    activation({
+      activation_code: verificationCode,
+      activation_token: token,
+    });
   };
 
   return (
@@ -51,8 +86,9 @@ const Verification: FC<Props> = ({ setRoute, setOpen }) => {
       <h2 className="text-2xl font-Josefin font-bold text-gray-900 dark:text-white mb-2">
         Verify Your Account
       </h2>
+
       <p className="text-sm text-gray-500 dark:text-gray-400 font-Poppins mb-6">
-        Enter the 6-digit verification code sent to your email
+        Enter the 4-digit verification code sent to your email
       </p>
 
       <form onSubmit={handleVerify} className="space-y-6 font-Poppins">
@@ -60,7 +96,9 @@ const Verification: FC<Props> = ({ setRoute, setOpen }) => {
           {digits.map((digit, idx) => (
             <input
               key={idx}
-              ref={(el) => { inputRefs.current[idx] = el; }}
+              ref={(el) => {
+                inputRefs.current[idx] = el;
+              }}
               type="text"
               inputMode="numeric"
               maxLength={1}
@@ -81,7 +119,10 @@ const Verification: FC<Props> = ({ setRoute, setOpen }) => {
 
         <div className="text-xs text-gray-500 dark:text-gray-400">
           {timer > 0 ? (
-            <p>Resend code in <span className="text-[#39c1f3] font-semibold">{timer}s</span></p>
+            <p>
+              Resend code in{" "}
+              <span className="text-[#39c1f3] font-semibold">{timer}s</span>
+            </p>
           ) : (
             <button
               type="button"

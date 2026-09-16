@@ -174,12 +174,13 @@ export const loginUser = asyncErrorHandler(
 
 export const logoutUser = asyncErrorHandler(
   async (req: Request, res: Response) => {
-    res.cookie("accessToken", "", { maxAge: 1 });
-    res.cookie("refreshToken", "", { maxAge: 1 });
+    res.clearCookie("accessToken", { httpOnly: true, sameSite: "lax" });
+    res.clearCookie("refreshToken", { httpOnly: true, sameSite: "lax" });
 
-    const userId = req.user?._id.toString() || "";
-
-    await redis.del(userId);
+    const userId = req.user?._id?.toString();
+    if (userId) {
+      await redis.del(userId);
+    }
 
     return res.status(200).json({
       success: true,
@@ -187,6 +188,7 @@ export const logoutUser = asyncErrorHandler(
     });
   },
 );
+
 
 export const updateAccessToken = asyncErrorHandler(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -293,10 +295,7 @@ export const getUserInfo = asyncErrorHandler(
 interface ISocialAuthBody {
   email: string;
   name: string;
-  avatar: {
-    public_id?: string;
-    url?: string;
-  };
+  avatar: string; // OAuth providers send a plain URL string
 }
 
 export const socialAuth = asyncErrorHandler(
@@ -309,7 +308,10 @@ export const socialAuth = asyncErrorHandler(
       const newUser = await User.create({
         email,
         name,
-        avatar,
+        avatar: {
+          public_id: "",
+          url: avatar,
+        },
       });
 
       return sendToken(newUser, 200, res);

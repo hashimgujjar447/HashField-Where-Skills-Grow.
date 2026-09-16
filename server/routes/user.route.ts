@@ -25,7 +25,7 @@ const router = Router();
 router.post("/register", registrationUser);
 router.post("/activate", activateUser);
 router.post("/login", loginUser);
-router.post("/logout", isAuthenticated, logoutUser);
+router.post("/logout", logoutUser);
 router.get("/refresh", updateAccessToken);
 router.get("/me", isAuthenticated, getUserInfo);
 router.post("/socialAuth", socialAuth);

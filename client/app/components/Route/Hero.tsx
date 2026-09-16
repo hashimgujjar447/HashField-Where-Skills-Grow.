@@ -33,19 +33,8 @@ const Hero: FC<Props> = () => {
                 alt="Online learning"
                 fill
                 priority
-                sizes="
-      (max-width: 640px) 350px,
-      (max-width: 1024px) 430px,
-      500px
-    "
-                className="
-      z-[1]
-      rounded-full
-      object-contain
-      p-5
-      sm:p-8
-      lg:p-10
-    "
+                sizes="(max-width: 640px) 350px, (max-width: 1024px) 430px, 500px"
+                className="z-[1] rounded-full object-contain p-5 sm:p-8 lg:p-10"
               />
             </div>
           </div>

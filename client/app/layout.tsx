@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { Poppins, Josefin_Sans } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "./utils/theme-provider";
 import type { ReactNode } from "react";
-
-import ReduxProvider from "./redux/services/provider";
+import Providers from "./providers";
+import { Toaster } from "react-hot-toast";
+import { useLoadUserQuery } from "./redux/services/api";
+import Custom from "./components/Custom";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -32,14 +33,16 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       className={`${poppins.variable} ${josefin.variable}`}
     >
       <body className="min-h-screen bg-no-repeat bg-white text-black duration-300 dark:bg-black dark:text-white">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <ReduxProvider>{children}</ReduxProvider>
-        </ThemeProvider>
+        <Toaster
+          position="top-right"
+          containerStyle={{
+            zIndex: 999999,
+          }}
+        />
+
+        <Providers>
+          <Custom>{children}</Custom>
+        </Providers>
       </body>
     </html>
   );
