@@ -1,15 +1,15 @@
 "use client";
 
 import { redirect } from "next/navigation";
-import { useSelector } from "react-redux";
-import type { RootState } from "@/app/redux/store";
+
+import useAuth from "./useAuth";
 
 export default function UseProtected({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { user } = useSelector((state: RootState) => state.auth);
+  const isAuth = useAuth();
 
-  return user ? <>{children}</> : redirect("/");
+  return <>{isAuth ? children : redirect("/login")}</>;
 }

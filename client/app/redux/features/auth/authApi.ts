@@ -1,5 +1,10 @@
 import { api } from "../../services/api";
-import { userRegistration, userLoggedIn, userLoggedOut, setUser } from "./authSlice";
+import {
+  userRegistration,
+  userLoggedIn,
+  userLoggedOut,
+  setUser,
+} from "./authSlice";
 
 type RegistrationResponse = {
   message: string;
@@ -51,6 +56,15 @@ export const authApi = api.injectEndpoints({
       query: (data) => ({
         url: "/activate",
         method: "POST",
+        body: data,
+        credentials: "include",
+      }),
+    }),
+
+    updateUserPassword: builder.mutation({
+      query: (data) => ({
+        url: "/update-password",
+        method: "PUT",
         body: data,
         credentials: "include",
       }),
@@ -169,4 +183,5 @@ export const {
   useUpdateUserInfoMutation,
   useUpdateUserAvatarMutation,
   useSocialAuthMutation,
+  useUpdateUserPasswordMutation,
 } = authApi;

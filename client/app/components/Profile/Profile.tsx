@@ -6,6 +6,7 @@ import ProfileInfo from "./ProfileInfo";
 import { useLogoutMutation } from "@/app/redux/features/auth/authApi";
 import { signOut } from "next-auth/react";
 import toast from "react-hot-toast";
+import ChangePassword from "./ChangePassword";
 
 type Props = {
   user: unknown | null;
@@ -71,6 +72,11 @@ const Profile: FC<Props> = ({ user }) => {
               avatar={avatar}
               setAvatar={setAvatar}
             />
+          </div>
+        )}
+        {activeTab === 2 && (
+          <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-[#ffffff1d] rounded-[5px] shadow-sm">
+            <ChangePassword />
           </div>
         )}
       </main>

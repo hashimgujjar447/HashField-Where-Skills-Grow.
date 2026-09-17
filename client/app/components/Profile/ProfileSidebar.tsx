@@ -1,15 +1,13 @@
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 import { AiOutlineLogout } from "react-icons/ai";
+import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { SiCoursera } from "react-icons/si";
 
-type User = {
-  avatar?: string;
-};
-
 type Props = {
-  user: User | null;
+  user: null | object;
   avatar: string | null;
   setActiveTab: React.Dispatch<React.SetStateAction<number>>;
   activeTab: number;
@@ -68,6 +66,23 @@ const ProfileSidebar: React.FC<Props> = ({
           Enrolled Courses
         </h5>
       </div>
+      {user?.role === "admin" && (
+        <Link
+          href="/admin"
+          className={`w-full flex items-center px-3 py-4 cursor-pointer ${
+            activeTab === 6 ? "bg-white dark:bg-slate-800" : "bg-transparent"
+          }`}
+          onClick={() => setActiveTab(6)}
+        >
+          <MdOutlineAdminPanelSettings
+            size={20}
+            className="text-black dark:text-white"
+          />
+          <h5 className="pl-2 min-[800px]:block hidden font-Poppins text-black dark:text-white">
+            Admin Dashboard
+          </h5>
+        </Link>
+      )}
 
       <div
         className={`w-full flex items-center px-3 py-4 cursor-pointer ${
