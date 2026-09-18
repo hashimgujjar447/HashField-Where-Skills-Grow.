@@ -1,83 +1,126 @@
-"use client";
+﻿"use client";
 
+import React, { FC, useState, useRef, useEffect } from "react";
 import { ThemeSwitcher } from "@/app/utils/ThemeSwitcher";
-import React, { FC, useState } from "react";
 import { IoMdNotificationsOutline } from "react-icons/io";
+import { Menu, X, Clock } from "lucide-react";
 
-type Props = {};
+type Props = {
+  open?: boolean;
+  setOpen?: (v: boolean) => void;
+};
 
-const DashboardHeader: FC<Props> = () => {
-  const [open, setOpen] = useState(false);
+const notifications = [
+  {
+    title: "New Question Received",
+    message: "A student asked a question in React Mastery course.",
+    time: "5 minutes ago",
+    unread: true,
+  },
+  {
+    title: "New Order",
+    message: "Bob Smith purchased the Node.js Pro course.",
+    time: "20 minutes ago",
+    unread: true,
+  },
+  {
+    title: "Course Review",
+    message: "New 5-star review on TypeScript 101.",
+    time: "2 hours ago",
+    unread: false,
+  },
+];
+
+const DashboardHeader: FC<Props> = ({ open, setOpen }) => {
+  const [notifOpen, setNotifOpen] = useState(false);
+  const notifRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
+        setNotifOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const unreadCount = notifications.filter((n) => n.unread).length;
 
   return (
-    <div className="w-full flex items-center justify-end p-6 fixed top-5 right-0">
-      <ThemeSwitcher />
-
-      <div
-        className="relative cursor-pointer m-2"
-        onClick={() => setOpen(!open)}
+    <header className="fixed top-0 right-0 left-0 z-40 flex h-16 items-center justify-between border-b border-slate-200 bg-white/90 px-4 backdrop-blur-md dark:border-slate-800 dark:bg-[#101936]/90 sm:px-6 lg:left-[270px]">
+      <button
+        onClick={() => setOpen && setOpen(!open)}
+        aria-label="Toggle sidebar"
+        className="flex h-9 w-9 items-center justify-center rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white transition-colors lg:hidden"
       >
-        <IoMdNotificationsOutline className="text-2xl cursor-pointer dark:text-white text-black" />
+        {open ? <X size={20} /> : <Menu size={20} />}
+      </button>
 
-        <span className="absolute top-[-2px] right-[-2px] bg-[#3ccba0] rounded-full w-[20px] h-[20px] flex items-center justify-center text-white">
-          3
-        </span>
-      </div>
+      <div className="ml-auto flex items-center gap-1">
+        <ThemeSwitcher />
 
-      {open && (
-        <div className="w-[350px] h-[50vh] dark:bg-[#111C43] bg-white shadow-xl absolute top-16 z-10 rounded">
-          <h5 className="text-center text-[20px] font-Poppins text-black dark:text-white p-3">
-            Notifications
-          </h5>
+        <div ref={notifRef} className="relative">
+          <button
+            onClick={() => setNotifOpen((v) => !v)}
+            aria-label="Notifications"
+            className="relative flex h-9 w-9 items-center justify-center rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white transition-colors"
+          >
+            <IoMdNotificationsOutline className="text-xl" />
+            {unreadCount > 0 && (
+              <span className="absolute right-1.5 top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-[9px] font-bold leading-none text-white">
+                {unreadCount}
+              </span>
+            )}
+          </button>
 
-          {/* Notification 1 */}
-          <div className="dark:bg-[#2d3a4ea1] bg-[#00000013] font-Poppins border-b dark:border-b-[#ffffff47] border-b-[#0000000f]">
-            <div className="w-full flex items-center justify-between p-2">
-              <p className="text-black dark:text-white">
-                New Question Received
-              </p>
-
-              <p className="text-black dark:text-white cursor-pointer">
-                Mark as read
-              </p>
+          {notifOpen && (
+            <div className="absolute right-0 top-11 z-50 w-80 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-[#111C43] sm:w-96">
+              <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3 dark:border-slate-700">
+                <p className="text-sm font-semibold text-slate-900 dark:text-white">Notifications</p>
+                <button className="text-xs font-medium text-indigo-600 hover:underline dark:text-indigo-400">
+                  Mark all read
+                </button>
+              </div>
+              <div className="max-h-72 divide-y divide-slate-100 overflow-y-auto dark:divide-slate-700">
+                {notifications.map((n, i) => (
+                  <div
+                    key={i}
+                    className="flex cursor-pointer flex-col gap-0.5 px-4 py-3 hover:bg-slate-50 dark:hover:bg-[#1b2447] transition-colors"
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        {n.unread && (
+                          <span className="h-2 w-2 shrink-0 rounded-full bg-indigo-500" />
+                        )}
+                        <p className="text-sm font-semibold text-slate-800 dark:text-white">
+                          {n.title}
+                        </p>
+                      </div>
+                      <button className="shrink-0 text-[11px] text-indigo-500 hover:underline dark:text-indigo-400">
+                        Mark read
+                      </button>
+                    </div>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-snug">
+                      {n.message}
+                    </p>
+                    <p className="flex items-center gap-1 text-[11px] text-slate-400 dark:text-slate-500">
+                      <Clock size={10} />
+                      {n.time}
+                    </p>
+                  </div>
+                ))}
+              </div>
+              <div className="border-t border-slate-100 px-4 py-2.5 dark:border-slate-700">
+                <button className="w-full text-center text-xs font-medium text-indigo-600 hover:underline dark:text-indigo-400">
+                  View all notifications
+                </button>
+              </div>
             </div>
-
-            <p className="px-2 text-black dark:text-white">
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-              <br />
-              Deserunt, sequi! Tempore libero omnis et, ea beatae ut, itaque
-            </p>
-
-            <p className="p-2 text-black dark:text-white text-[14px]">
-              5 days ago
-            </p>
-          </div>
-
-          {/* Notification 2 */}
-          <div className="dark:bg-[#2d3a4ea1] bg-[#00000013] font-Poppins border-b dark:border-b-[#ffffff47] border-b-[#0000000f]">
-            <div className="w-full flex items-center justify-between p-2">
-              <p className="text-black dark:text-white">
-                New Question Received
-              </p>
-
-              <p className="text-black dark:text-white cursor-pointer">
-                Mark as read
-              </p>
-            </div>
-
-            <p className="px-2 text-black dark:text-white">
-              Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-              <br />
-              Deserunt, sequi! Tempore libero omnis et, ea beatae ut, itaque
-            </p>
-
-            <p className="p-2 text-black dark:text-white text-[14px]">
-              5 days ago
-            </p>
-          </div>
+          )}
         </div>
-      )}
-    </div>
+      </div>
+    </header>
   );
 };
 

@@ -15,8 +15,20 @@ const courseApi = api.injectEndpoints({
       query: (courseId: string) => `/get-course/${courseId}`,
       providesTags: ["Course"],
     }),
+
+    createCourse: builder.mutation({
+      query: (body) => ({
+        url: "/create-course",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Course"],
+    }),
   }),
 });
 
-export const { useGetAllCoursesQuery, useGetSingleCourseWithOutAuthQuery } =
-  courseApi;
+export const {
+  useGetAllCoursesQuery,
+  useGetSingleCourseWithOutAuthQuery,
+  useCreateCourseMutation,
+} = courseApi;

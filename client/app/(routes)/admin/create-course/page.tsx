@@ -4,23 +4,23 @@ import React from "react";
 import AdminProtected from "@/app/components/hooks/AdminProtected";
 import Heading from "@/app/utils/Heading";
 import AdminLayout from "@/app/components/admin/AdminLayout";
-import DashboardHero from "@/app/components/admin/DashboardHero";
+import CreateCourse from "@/app/components/admin/course/CreateCourse";
 
-const AdminPage = () => {
+const CreateCoursePage = () => {
   return (
     <div>
       <AdminProtected>
         <Heading
-          title="Elearning - Admin"
-          description="Elearning is a platform for students to learn and get help from teachers"
+          title="Elearning - Create Course"
+          description="Create a new course on Elearning platform"
           keywords="Programming,MERN,Redux,Machine Learning"
         />
         <AdminLayout>
-          <DashboardHero />
+          <CreateCourse />
         </AdminLayout>
       </AdminProtected>
     </div>
   );
 };
 
-export default AdminPage;
+export default CreateCoursePage;
