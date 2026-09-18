@@ -58,7 +58,7 @@ const menuSections: MenuSection[] = [
       {
         title: "Live Courses",
         icon: <PlaySquare size={20} />,
-        href: "/admin/live-courses",
+        href: "/admin/courses",
       },
     ],
   },
