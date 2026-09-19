@@ -148,6 +148,30 @@ export const authApi = api.injectEndpoints({
         }
       },
     }),
+    getAllUsers: builder.query({
+      query: () => ({
+        url: "/get-all-users",
+        method: "GET",
+        credentials: "include",
+      }),
+    }),
+
+    updateUserRole: builder.mutation({
+      query: (data) => ({
+        url: "/update-role",
+        method: "PUT",
+        body: data,
+        credentials: "include",
+      }),
+    }),
+
+    deleteUser: builder.mutation({
+      query: (id) => ({
+        url: `/delete-user/${id}`,
+        method: "DELETE",
+        credentials: "include",
+      }),
+    }),
 
     socialAuth: builder.mutation({
       query: (data) => ({
@@ -184,4 +208,7 @@ export const {
   useUpdateUserAvatarMutation,
   useSocialAuthMutation,
   useUpdateUserPasswordMutation,
+  useGetAllUsersQuery,
+  useUpdateUserRoleMutation,
+  useDeleteUserMutation,
 } = authApi;

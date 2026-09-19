@@ -21,7 +21,7 @@ const defaultInfo: CourseInfoData = {
 };
 
 const CreateCourse: React.FC = () => {
-  const [active, setActive] = useState(1);
+  const [active, setActive] = useState(0);
   const [courseInfo, setCourseInfo] = useState<CourseInfoData>(defaultInfo);
   const [benefits, setBenefits] = useState<BenefitOrPrerequisite[]>([
     { title: "" },

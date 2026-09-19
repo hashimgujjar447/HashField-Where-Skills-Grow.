@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React from "react";
 import {
@@ -25,6 +25,7 @@ type Props = {
   sections: Section[];
   handleCourseCreate: () => void;
   isLoading?: boolean;
+  isEdit?: boolean;
 };
 
 const CoursePreview: React.FC<Props> = ({
@@ -36,6 +37,7 @@ const CoursePreview: React.FC<Props> = ({
   sections,
   handleCourseCreate,
   isLoading = false,
+  isEdit = false,
 }) => {
   const discount =
     courseInfo.estimatedPrice &&
@@ -252,8 +254,10 @@ const CoursePreview: React.FC<Props> = ({
           {isLoading ? (
             <>
               <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-              Creating…
+              {isEdit ? "Updating…" : "Creating…"}
             </>
+          ) : isEdit ? (
+            "Update Course"
           ) : (
             "Create Course"
           )}

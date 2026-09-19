@@ -13,7 +13,7 @@ const AdminLayout: React.FC<Props> = ({ children }) => {
     <div className="min-h-screen bg-slate-50 dark:bg-[#0d1526] text-slate-900 dark:text-white">
       <AdminSidebar open={sidebarOpen} setOpen={setSidebarOpen} />
 
-      <div className="flex min-h-screen flex-col lg:ml-[270px]">
+      <div className="flex min-h-screen flex-col lg:ml-[260px]">
         <DashboardHeader open={sidebarOpen} setOpen={setSidebarOpen} />
 
         <main className="flex-1 px-4 pt-20 pb-10 sm:px-6 lg:px-8">

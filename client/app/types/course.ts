@@ -77,6 +77,7 @@ export interface ICourse {
   courseData: ICourseDataPreview[];
   ratings: number;
   purchased: number;
+  createdAt: Date;
 }
 
 export interface ICourseCard {
@@ -91,12 +92,26 @@ export interface ICourseCard {
   thumbnail?: IThumbnail;
 }
 
+export interface ICourseAdmin extends Omit<ICourse, "courseData"> {
+  courseData: ICourseData[];
+}
+
 export interface GetAllCoursesResponse {
   success: boolean;
   courses: ICourse[];
 }
 
+export interface GetAllCoursesForAdminResponse {
+  success: boolean;
+  courses: ICourseAdmin[];
+}
+
 export interface GetSingleCourseResponse {
+  success: boolean;
+  course: ICourse;
+}
+
+export interface EditCourseResponse {
   success: boolean;
   course: ICourse;
 }

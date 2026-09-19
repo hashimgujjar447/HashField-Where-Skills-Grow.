@@ -53,7 +53,11 @@ export const editCourse = asyncErrorHandler(
     const data = req.body;
     const thumbnail = data.thumbnail;
 
-    if (thumbnail) {
+    if (
+      thumbnail &&
+      typeof thumbnail === "string" &&
+      !thumbnail.startsWith("http")
+    ) {
       if (course.thumbnail?.public_id) {
         await cloudinary.v2.uploader.destroy(course.thumbnail.public_id);
       }
@@ -66,6 +70,19 @@ export const editCourse = asyncErrorHandler(
         public_id: myCloud.public_id,
         url: myCloud.secure_url,
       };
+    } else if (
+      thumbnail &&
+      typeof thumbnail === "string" &&
+      thumbnail.startsWith("http")
+    ) {
+      data.thumbnail = {
+        public_id: course.thumbnail?.public_id,
+        url: course.thumbnail?.url,
+      };
+    } else if (typeof thumbnail === "object" && thumbnail?.public_id) {
+      data.thumbnail = thumbnail;
+    } else if (!thumbnail) {
+      data.thumbnail = course.thumbnail;
     }
 
     const updatedCourse = await Course.findByIdAndUpdate(

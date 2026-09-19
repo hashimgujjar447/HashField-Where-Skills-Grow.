@@ -4,7 +4,8 @@ import React from "react";
 import AdminProtected from "@/app/components/hooks/AdminProtected";
 import Heading from "@/app/utils/Heading";
 import AdminLayout from "@/app/components/admin/AdminLayout";
-import AllCourses from "@/app/components/admin/course/AllCourses";
+
+import AllUsers from "@/app/components/admin/user/AllUsers";
 
 const AdminPage = () => {
   return (
@@ -16,7 +17,7 @@ const AdminPage = () => {
           keywords="Programming,MERN,Redux,Machine Learning"
         />
         <AdminLayout>
-          <AllCourses />
+          <AllUsers />
         </AdminLayout>
       </AdminProtected>
     </div>
