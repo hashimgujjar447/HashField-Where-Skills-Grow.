@@ -189,7 +189,6 @@ export const logoutUser = asyncErrorHandler(
   },
 );
 
-
 export const updateAccessToken = asyncErrorHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -270,11 +269,12 @@ export const updateAccessToken = asyncErrorHandler(
 
       await redis.set(user._id.toString(), JSON.stringify(user), "EX", 604800);
 
-      res.status(200).json({
-        success: true,
-        accessToken,
-        status: "success",
-      });
+      // res.status(200).json({
+      //   success: true,
+      //   accessToken,
+      //   status: "success",
+      // });
+      next();
     } catch (error) {
       return next(new ErrorHandler("Invalid refresh token", 401));
     }

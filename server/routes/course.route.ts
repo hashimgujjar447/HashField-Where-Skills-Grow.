@@ -16,6 +16,7 @@ import {
   authorizeRoles,
   isAuthenticated,
 } from "../middleware/auth.middleware.js";
+import { updateAccessToken } from "../controllers/user.controller.js";
 
 const router = Router();
 
@@ -28,6 +29,7 @@ router.post(
 
 router.put(
   "/edit-course/:id",
+  updateAccessToken,
   isAuthenticated,
   authorizeRoles("admin"),
   editCourse,

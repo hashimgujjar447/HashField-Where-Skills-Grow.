@@ -90,7 +90,7 @@ const menuSections: MenuSection[] = [
       {
         title: "Courses Analytics",
         icon: <BarChart3 size={20} />,
-        href: "/admin/analytics/courses",
+        href: "/admin/courses-analytics",
       },
       {
         title: "Orders Analytics",
@@ -101,16 +101,6 @@ const menuSections: MenuSection[] = [
         title: "Users Analytics",
         icon: <UserRoundSearch size={20} />,
         href: "/admin/analytics/users",
-      },
-    ],
-  },
-  {
-    title: "Extras",
-    items: [
-      {
-        title: "Settings",
-        icon: <Settings size={20} />,
-        href: "/admin/settings",
       },
     ],
   },

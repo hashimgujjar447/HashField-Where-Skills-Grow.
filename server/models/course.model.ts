@@ -41,6 +41,7 @@ interface ICourse extends Document {
   description: string;
   price: number;
   estimatedPrice?: number;
+  categories: string;
   thumbnail?: {
     public_id: string;
     url: string;
@@ -230,6 +231,10 @@ const courseSchema = new mongoose.Schema<ICourse>(
         },
       ],
       default: [],
+    },
+    categories: {
+      type: String,
+      required: true,
     },
 
     reviews: {

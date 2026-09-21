@@ -2,6 +2,7 @@
 
 import React, { useRef } from "react";
 import { Upload, X } from "lucide-react";
+import { useGetCategoriesDataQuery } from "@/app/redux/features/layout/layoutApi";
 
 export interface CourseInfoData {
   name: string;
@@ -12,6 +13,7 @@ export interface CourseInfoData {
   level: string;
   demoUrl: string;
   thumbnail: string;
+  categories: string;
 }
 
 type Props = {
@@ -27,10 +29,14 @@ const CourseInformation: React.FC<Props> = ({
   active,
   setActive,
 }) => {
+  const { data, isLoading, isError } = useGetCategoriesDataQuery("categories");
+
   const fileRef = useRef<HTMLInputElement>(null);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
   ) => {
     setCourseInfo({ ...courseInfo, [e.target.name]: e.target.value });
   };
@@ -44,8 +50,7 @@ const CourseInformation: React.FC<Props> = ({
     reader.readAsDataURL(file);
   };
 
-  const removeThumbnail = () =>
-    setCourseInfo({ ...courseInfo, thumbnail: "" });
+  const removeThumbnail = () => setCourseInfo({ ...courseInfo, thumbnail: "" });
 
   const handleNext = (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,7 +60,8 @@ const CourseInformation: React.FC<Props> = ({
       !courseInfo.price ||
       !courseInfo.tags ||
       !courseInfo.level ||
-      !courseInfo.demoUrl
+      !courseInfo.demoUrl ||
+      !courseInfo.categories
     ) {
       alert("Please fill in all required fields.");
       return;
@@ -118,7 +124,10 @@ const CourseInformation: React.FC<Props> = ({
           </div>
           <div>
             <label className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">
-              Estimated Price <span className="text-slate-400 dark:text-slate-500 font-normal">(optional)</span>
+              Estimated Price{" "}
+              <span className="text-slate-400 dark:text-slate-500 font-normal">
+                (optional)
+              </span>
             </label>
             <input
               name="estimatedPrice"
@@ -132,17 +141,48 @@ const CourseInformation: React.FC<Props> = ({
           </div>
         </div>
 
-        <div>
-          <label className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">
-            Course Tags <span className="text-red-500">*</span>
-          </label>
-          <input
-            name="tags"
-            value={courseInfo.tags}
-            onChange={handleChange}
-            placeholder="MERN, Next 13, Socket.io, Tailwind CSS, LMS"
-            className={inputCls}
-          />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">
+              Course Tags <span className="text-red-500">*</span>
+            </label>
+            <input
+              name="tags"
+              value={courseInfo.tags}
+              onChange={handleChange}
+              placeholder="MERN, Next 13, Socket.io, Tailwind CSS, LMS"
+              className={inputCls}
+            />
+          </div>
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">
+              Course Categories <span className="text-red-500">*</span>
+            </label>
+
+            <select
+              name="categories"
+              value={courseInfo.categories}
+              onChange={handleChange}
+              className={inputCls}
+            >
+              <option
+                value=""
+                className="bg-white text-slate-900 dark:bg-[#1a2540] dark:text-white"
+              >
+                Select category
+              </option>
+
+              {data?.layout?.categories?.map((category: any) => (
+                <option
+                  key={category._id}
+                  value={category._id}
+                  className="bg-white text-slate-900 dark:bg-[#1a2540] dark:text-white"
+                >
+                  {category.title}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -150,7 +190,12 @@ const CourseInformation: React.FC<Props> = ({
             <label className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">
               Course Level <span className="text-red-500">*</span>
             </label>
-            <select name="level" value={courseInfo.level} onChange={handleChange} className={inputCls}>
+            <select
+              name="level"
+              value={courseInfo.level}
+              onChange={handleChange}
+              className={inputCls}
+            >
               <option value="">Select level</option>
               <option value="Beginner">Beginner</option>
               <option value="Intermediate">Intermediate</option>
@@ -198,7 +243,10 @@ const CourseInformation: React.FC<Props> = ({
               onClick={() => fileRef.current?.click()}
               className="flex w-full flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-[#1a2540] py-8 sm:py-10 transition hover:border-indigo-400 dark:hover:border-indigo-500"
             >
-              <Upload size={28} className="text-slate-400 dark:text-slate-500" />
+              <Upload
+                size={28}
+                className="text-slate-400 dark:text-slate-500"
+              />
               <span className="text-sm font-medium text-slate-600 dark:text-slate-400">
                 Click to upload thumbnail
               </span>

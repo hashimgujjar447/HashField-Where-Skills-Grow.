@@ -18,6 +18,7 @@ const defaultInfo: CourseInfoData = {
   level: "",
   demoUrl: "",
   thumbnail: "",
+  categories: "",
 };
 
 const CreateCourse: React.FC = () => {
@@ -67,6 +68,7 @@ const CreateCourse: React.FC = () => {
           .split(",")
           .map((t) => t.trim())
           .filter(Boolean),
+        categories: courseInfo.categories,
         level: courseInfo.level,
         demoUrl: courseInfo.demoUrl,
         thumbnail: courseInfo.thumbnail,
