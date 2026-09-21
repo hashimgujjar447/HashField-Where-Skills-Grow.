@@ -11,6 +11,5 @@ export const connectDb = async () => {
     });
   } catch (error: any) {
     console.log(error.message);
-    // setTimeout(connectDb, 500);
   }
 };

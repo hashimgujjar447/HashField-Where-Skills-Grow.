@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useActivationMutation } from "@/app/redux/features/auth/authApi";
 import React, { FC, useState, useEffect, useRef } from "react";
@@ -15,7 +15,8 @@ const Verification: FC<Props> = ({ setRoute, setOpen }) => {
   const [digits, setDigits] = useState<string[]>(["", "", "", ""]);
   const [timer, setTimer] = useState<number>(60);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-  const { token } = useSelector((state: unknown) => state.auth);
+  const { token } = useSelector((state: any) => state.auth);
+
 
   const [activation, { isSuccess, error }] = useActivationMutation();
 

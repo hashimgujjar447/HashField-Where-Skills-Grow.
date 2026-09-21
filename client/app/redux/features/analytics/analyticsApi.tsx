@@ -9,7 +9,25 @@ const analyticsApi = api.injectEndpoints({
         credentials: "include",
       }),
     }),
+    getOrdersAnalytics: builder.query({
+      query: () => ({
+        url: `/get-orders-analytics`,
+        method: "GET",
+        credentials: "include",
+      }),
+    }),
+    getUsersAnalytics: builder.query({
+      query: () => ({
+        url: `/get-users-analytics`,
+        method: "GET",
+        credentials: "include",
+      }),
+    }),
   }),
 });
 
-export const { useGetCourseAnalyticsQuery } = analyticsApi;
+export const {
+  useGetCourseAnalyticsQuery,
+  useGetOrdersAnalyticsQuery,
+  useGetUsersAnalyticsQuery,
+} = analyticsApi;

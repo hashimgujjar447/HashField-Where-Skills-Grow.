@@ -82,7 +82,6 @@ export const createOrder = asyncErrorHandler(
   },
 );
 
-// get all orders -- Only for admin
 export const getAllOrders = asyncErrorHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     try {

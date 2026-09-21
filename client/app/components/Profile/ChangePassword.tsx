@@ -38,8 +38,6 @@ const ChangePassword = () => {
     }
 
     try {
-      console.log("Updating password...");
-
       await updateUserPassword({
         currentPassword: oldPassword,
         newPassword,
@@ -51,7 +49,6 @@ const ChangePassword = () => {
       setNewPassword("");
       setConfirmPassword("");
     } catch (error: any) {
-      console.log(error);
       toast.error(error?.data?.message || "Failed to update password");
     }
   };
@@ -75,7 +72,6 @@ const ChangePassword = () => {
 
         <form
           onSubmit={(e) => {
-            console.log("Form submitted");
             handleSubmit(e);
           }}
           className="rounded-2xl border border-gray-800 bg-[#111827] p-6 shadow-xl sm:p-8"

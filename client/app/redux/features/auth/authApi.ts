@@ -46,9 +46,7 @@ export const authApi = api.injectEndpoints({
               token: result.data.activationToken,
             }),
           );
-        } catch (error: unknown) {
-          console.log(error);
-        }
+        } catch {}
       },
     }),
 
@@ -88,9 +86,7 @@ export const authApi = api.injectEndpoints({
               user: result.data.user,
             }),
           );
-        } catch (error: unknown) {
-          console.log(error);
-        }
+        } catch {}
       },
     }),
 
@@ -107,9 +103,7 @@ export const authApi = api.injectEndpoints({
 
           dispatch(userLoggedOut());
           dispatch(api.util.resetApiState());
-        } catch (error: unknown) {
-          console.log(error);
-        }
+        } catch {}
       },
     }),
 
@@ -125,9 +119,7 @@ export const authApi = api.injectEndpoints({
         try {
           const result = await queryFulfilled;
           dispatch(setUser({ user: result.data.user }));
-        } catch (error: unknown) {
-          console.log(error);
-        }
+        } catch {}
       },
     }),
 
@@ -143,9 +135,7 @@ export const authApi = api.injectEndpoints({
         try {
           const result = await queryFulfilled;
           dispatch(setUser({ user: result.data.user }));
-        } catch (error: unknown) {
-          console.log(error);
-        }
+        } catch {}
       },
     }),
     getAllUsers: builder.query({
@@ -191,9 +181,7 @@ export const authApi = api.injectEndpoints({
               user: result.data.user,
             }),
           );
-        } catch (error: unknown) {
-          console.log(error);
-        }
+        } catch {}
       },
     }),
   }),

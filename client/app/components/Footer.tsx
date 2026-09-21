@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React from "react";
 import Link from "next/link";
@@ -10,7 +10,6 @@ const Footer = () => {
     <footer className="bg-gray-900 dark:bg-[#0b0f17] text-gray-300 pt-16 pb-8 mt-16">
       <div className="max-w-[1500px] mx-auto px-5 sm:px-8 lg:px-10">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
-          {/* Brand */}
           <div>
             <Link href="/" className="text-2xl font-Josefin font-[700] text-white">
               ELearn
@@ -27,7 +26,6 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Quick Links */}
           <div>
             <h3 className="text-white font-Josefin font-[600] text-[16px] mb-4">Quick Links</h3>
             <ul className="space-y-3">
@@ -41,7 +39,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Top Courses */}
           <div>
             <h3 className="text-white font-Josefin font-[600] text-[16px] mb-4">Top Courses</h3>
             <ul className="space-y-3">
@@ -55,7 +52,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Contact */}
           <div>
             <h3 className="text-white font-Josefin font-[600] text-[16px] mb-4">Contact Us</h3>
             <ul className="space-y-4">
@@ -84,7 +80,6 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Divider */}
         <div className="border-t border-gray-800 dark:border-[#ffffff1c] pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm font-Poppins text-gray-500">
             © {new Date().getFullYear()} ELearn. All rights reserved.

@@ -102,9 +102,9 @@ const AllUsers = ({ isTeam }: Props) => {
     },
   ];
 
-  const handleDelete = (id: string) => {
-    console.log("Delete user:", id);
-  };
+  const handleDelete = (_id: string) => {};
+
+
 
   const getTimeAgo = (createdAt: string) => {
     const created = new Date(createdAt);

@@ -22,6 +22,7 @@ const defaultInfo: CourseInfoData = {
   level: "",
   demoUrl: "",
   thumbnail: "",
+  categories: "",
 };
 
 type Props = {
@@ -40,8 +41,6 @@ const EditCourse: React.FC<Props> = ({ id }) => {
   const selectedCourse = allCourses?.courses.find(
     (course) => course._id === id,
   );
-
-  console.log("Selected Course:", selectedCourse);
 
   const [active, setActive] = useState(0);
 
@@ -71,7 +70,9 @@ const EditCourse: React.FC<Props> = ({ id }) => {
       level: selectedCourse.level || "",
       demoUrl: selectedCourse.demoUrl || "",
       thumbnail: selectedCourse.thumbnail?.url || "",
+      categories: selectedCourse.categories || "",
     });
+
 
     setBenefits(
       Array.isArray(selectedCourse.benefits) && selectedCourse.benefits.length

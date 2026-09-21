@@ -71,6 +71,7 @@ export interface ICourse {
   tags: string[];
   level: string;
   demoUrl: string;
+  categories?: string;
   benefits: IBenefit[];
   prerequisites: IPrerequisite[];
   reviews: IReview[];

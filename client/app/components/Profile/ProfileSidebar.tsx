@@ -7,7 +7,9 @@ import { RiLockPasswordLine } from "react-icons/ri";
 import { SiCoursera } from "react-icons/si";
 
 type Props = {
-  user: null | object;
+  user: Record<string, any> | null;
+
+
   avatar: string | null;
   setActiveTab: React.Dispatch<React.SetStateAction<number>>;
   activeTab: number;

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState } from "react";
 import CourseInformation, { type CourseInfoData } from "./CourseInformation";
@@ -76,8 +76,6 @@ const CreateCourse: React.FC = () => {
         prerequisites: prerequisites.map((p) => ({ title: p.title })),
         courseData: buildCourseData(),
       };
-
-      console.log("Course Payload:", payload);
 
       await createCourse(payload).unwrap();
       toast.success("Course created successfully!");

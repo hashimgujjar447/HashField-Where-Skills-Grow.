@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState } from "react";
 import { useParams } from "next/navigation";
@@ -11,7 +11,8 @@ import { useGetSingleCourseWithOutAuthQuery } from "@/app/redux/services/courseA
 const CourseDetailPage = () => {
   const [open, setOpen] = useState(false);
   const params = useParams();
-  const courseId = typeof params.id === "string" ? params.id : "";
+  const courseId = params && typeof params.id === "string" ? params.id : "";
+
 
   const { data, isLoading, isError } =
     useGetSingleCourseWithOutAuthQuery(courseId);

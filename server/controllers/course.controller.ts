@@ -104,7 +104,6 @@ export const editCourse = asyncErrorHandler(
 export const getSingleCourse = asyncErrorHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const courseId = req.params.id;
-    console.log(courseId);
 
     if (typeof courseId !== "string") {
       return res.status(400).json({
@@ -118,7 +117,6 @@ export const getSingleCourse = asyncErrorHandler(
     }
 
     const isCachedExist = await redis.get(courseId);
-    console.log(isCachedExist);
 
     if (isCachedExist) {
       return res.status(200).json({
@@ -130,8 +128,6 @@ export const getSingleCourse = asyncErrorHandler(
     const course = await Course.findById(courseId).select(
       "-courseData.videoUrl -courseData.videoPlayer -courseData.videoLength -courseData.suggestions -courseData.questions -courseData.links",
     );
-
-    console.log(course);
 
     if (!course) {
       return next(new ErrorHandler("Course not found", 404));
@@ -181,7 +177,6 @@ export const getCourseByUser = asyncErrorHandler(
       return next(new ErrorHandler("Course ID is required", 400));
     }
 
-    console.log("User course list:", userCourseList);
     if (!userCourseList || userCourseList.length === 0) {
       return next(new ErrorHandler("You have not purchased any courses", 400));
     }
@@ -285,18 +280,6 @@ export const addQuestionAnswer = asyncErrorHandler(
     if (!question) {
       return next(new ErrorHandler("Please provide an answer", 400));
     }
-
-    // if (!userCourseList || userCourseList.length === 0) {
-    //   return next(new ErrorHandler("You have not purchased any courses", 403));
-    // }
-
-    // const isCourseExist = userCourseList.find(
-    //   (course) => course.courseId.toString() === courseId,
-    // );
-
-    // if (!isCourseExist) {
-    //   return next(new ErrorHandler("Please purchase this course first", 403));
-    // }
 
     const course = await Course.findById(courseId).populate(
       "courseData.questions.user",
@@ -436,7 +419,6 @@ export const addReview = asyncErrorHandler(
       message: `${req.user?.name} is given a review on ${course.title}`,
     };
 
-    // create notification
     await Notification.create({
       ...notification,
       userId: req.user!._id,

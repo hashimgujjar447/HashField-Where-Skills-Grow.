@@ -24,7 +24,8 @@ const AddMemberModal = ({ users, onClose, onSubmit }: AddMemberModalProps) => {
     e.preventDefault();
 
     if (!selectedUser) return;
-    console.log("Selected User ID:", selectedUser);
+
+
 
     onSubmit?.(selectedUser, role);
   };

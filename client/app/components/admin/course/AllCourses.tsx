@@ -56,7 +56,6 @@ const AllCourses = (props: Props) => {
   ];
 
   const handleDelete = async (id: string) => {
-    console.log("Delete course:", id);
     if (!id) {
       toast.error("Course ID is missing. Cannot delete the course.");
       return;
@@ -72,9 +71,9 @@ const AllCourses = (props: Props) => {
     }
   };
 
-  const handleEdit = (id: string) => {
-    console.log("Edit course:", id);
-  };
+  const handleEdit = (_id: string) => {};
+
+
 
   const getTimeAgo = (createdAt: string) => {
     const created = new Date(createdAt);

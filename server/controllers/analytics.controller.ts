@@ -20,8 +20,6 @@ export const getUsersAnalytics = asyncErrorHandler(
   },
 );
 
-// order analytics
-
 export const getOrdersAnalytics = asyncErrorHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -35,8 +33,6 @@ export const getOrdersAnalytics = asyncErrorHandler(
     }
   },
 );
-
-// course analytics
 
 export const getCoursesAnalytics = asyncErrorHandler(
   async (req: Request, res: Response, next: NextFunction) => {

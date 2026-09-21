@@ -42,7 +42,8 @@ const Header: FC<Props> = ({ open, setOpen, activeItem }) => {
         avatar: data.user.image,
       })
         .unwrap()
-        .catch((error) => console.log("Social auth failed:", error));
+        .catch(() => {});
+
     }
   }, [data, status]);
 

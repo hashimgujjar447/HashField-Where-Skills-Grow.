@@ -4,10 +4,14 @@ import React, { FC } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { BiSearch } from "react-icons/bi";
+import { useGetHeroDataQuery } from "@/app/redux/features/layout/layoutApi";
 
 type Props = {};
 
 const Hero: FC<Props> = () => {
+  const { data } = useGetHeroDataQuery("banner");
+
+  console.log("Hero data:", data);
   return (
     <section className="relative w-full overflow-hidden bg-white dark:bg-[#0b0f17]">
       <div className="mx-auto flex min-h-[500px] w-full max-w-[1500px] items-center px-5 py-5 sm:px-8 lg:px-10">
@@ -29,7 +33,10 @@ const Hero: FC<Props> = () => {
   "
             >
               <Image
-                src="/assets/hero-placeholder.png"
+                src={
+                  data?.layout?.banner?.image?.url ||
+                  "/assets/hero-placeholder.png"
+                }
                 alt="Online learning"
                 fill
                 priority
@@ -55,11 +62,7 @@ const Hero: FC<Props> = () => {
            
               "
             >
-              Improve Your Online
-              <br />
-              Learning Experience
-              <br />
-              Better Instantly
+              {data?.layout?.banner?.title}
             </h1>
 
             <p
@@ -76,8 +79,7 @@ const Hero: FC<Props> = () => {
            
               "
             >
-              We have 40k+ Online courses & 500K+ Online registered student.
-              Find your desired Courses from them.
+              {data?.layout?.banner?.subtitle}
             </p>
 
             {/* Search */}

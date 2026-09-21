@@ -62,7 +62,8 @@ const Register: FC<Props> = ({ setRoute, setOpen }) => {
 
     const data = await register(registerData);
 
-    console.log(data);
+
+
   };
 
   return (

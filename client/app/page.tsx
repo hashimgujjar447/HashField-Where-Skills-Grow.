@@ -41,7 +41,6 @@ const Page: FC<Props> = () => {
 
       <Footer />
 
-      {/* Auth Modals */}
       {route === "Login" && (
         <CustomModel
           open={open}

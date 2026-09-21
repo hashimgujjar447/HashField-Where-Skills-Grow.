@@ -1,6 +1,6 @@
 "use client";
 
-import { useGetCourseAnalyticsQuery } from "@/app/redux/features/analytics/analyticsApi";
+import { useGetOrdersAnalyticsQuery } from "@/app/redux/features/analytics/analyticsApi";
 import React from "react";
 import Loader from "../../Loader";
 import {
@@ -15,11 +15,11 @@ import {
 
 type Props = {};
 
-const CourseAnalytics = (props: Props) => {
-  const { data, isLoading, isError } = useGetCourseAnalyticsQuery({});
+const OrderAnalytics = (props: Props) => {
+  const { data, isLoading, isError } = useGetOrdersAnalyticsQuery({});
 
   const analyticsData =
-    data?.courses?.last12Months?.map(
+    data?.orders?.last12Months?.map(
       (item: { month: string; count: number }) => ({
         name: new Date(item.month).toLocaleDateString("en-US", {
           month: "short",
@@ -32,7 +32,9 @@ const CourseAnalytics = (props: Props) => {
   return (
     <>
       {isLoading ? (
-        <Loader />
+        <div className="flex h-screen items-center justify-center">
+          <div className="text-lg font-medium text-slate-500">Loading...</div>
+        </div>
       ) : isError ? (
         <div className="flex h-screen items-center justify-center">
           <p className="text-red-500">Error occurred</p>
@@ -42,11 +44,11 @@ const CourseAnalytics = (props: Props) => {
           <div className="mx-auto w-full max-w-[1400px]">
             <div className="mb-8">
               <h1 className="px-1 text-2xl font-semibold text-white">
-                Courses Analytics
+                Orders Analytics
               </h1>
 
               <p className="px-1 pt-1 text-sm text-slate-400">
-                Last 12 months course creation data
+                Last 12 months order data
               </p>
             </div>
 
@@ -126,4 +128,4 @@ const CourseAnalytics = (props: Props) => {
   );
 };
 
-export default CourseAnalytics;
+export default OrderAnalytics;

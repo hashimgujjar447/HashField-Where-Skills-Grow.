@@ -24,8 +24,7 @@ const Profile: FC<Props> = ({ user }) => {
       await signOut({ redirect: false });
       toast.success("Logout successful");
       window.location.href = "/";
-    } catch (error) {
-      console.log("Logout failed:", error);
+    } catch {
       window.location.href = "/";
     }
   };

@@ -95,12 +95,12 @@ const menuSections: MenuSection[] = [
       {
         title: "Orders Analytics",
         icon: <ShoppingCart size={20} />,
-        href: "/admin/analytics/orders",
+        href: "/admin/orders-analytics",
       },
       {
         title: "Users Analytics",
         icon: <UserRoundSearch size={20} />,
-        href: "/admin/analytics/users",
+        href: "/admin/users-analytics",
       },
     ],
   },

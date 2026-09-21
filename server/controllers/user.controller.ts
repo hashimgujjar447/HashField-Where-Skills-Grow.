@@ -162,7 +162,6 @@ export const loginUser = asyncErrorHandler(
     }
 
     const verifyPassword = await user.comparePassword(password);
-    console.log(verifyPassword);
 
     if (!verifyPassword) {
       return next(new ErrorHandler("Invalid email or password", 401));
@@ -269,12 +268,11 @@ export const updateAccessToken = asyncErrorHandler(
 
       await redis.set(user._id.toString(), JSON.stringify(user), "EX", 604800);
 
-      // res.status(200).json({
-      //   success: true,
-      //   accessToken,
-      //   status: "success",
-      // });
-      next();
+      res.status(200).json({
+        success: true,
+        accessToken,
+        status: "success",
+      });
     } catch (error) {
       return next(new ErrorHandler("Invalid refresh token", 401));
     }
@@ -427,18 +425,15 @@ export const updateUserAvatar = asyncErrorHandler(
         return next(new ErrorHandler("User not found", 404));
       }
 
-      // Delete old avatar
       if (user.avatar?.public_id) {
         await cloudinary.uploader.destroy(user.avatar.public_id);
       }
 
-      // Upload new avatar
       const uploadedImage = await cloudinary.uploader.upload(avatar, {
         folder: "avatars",
         width: 150,
       });
 
-      // Save new avatar
       user.avatar = {
         public_id: uploadedImage.public_id,
         url: uploadedImage.secure_url,
@@ -453,8 +448,7 @@ export const updateUserAvatar = asyncErrorHandler(
         message: "Avatar updated successfully",
         avatar: user.avatar,
       });
-    } catch (error) {
-      console.log(error);
+    } catch {
       return next(new ErrorHandler("Failed to update avatar", 500));
     }
   },
@@ -470,7 +464,6 @@ export const getAllUsers = asyncErrorHandler(
   },
 );
 
-// Update user role -- Only for admin
 export const updateUserRole = asyncErrorHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
