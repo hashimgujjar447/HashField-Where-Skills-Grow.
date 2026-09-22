@@ -12,6 +12,7 @@ import CustomModel from "./utils/CustomModel";
 import Login from "./components/Auth/Login";
 import Register from "./components/Auth/Register";
 import Verification from "./components/Auth/Verification";
+import Faqs from "./components/Route/Faqs";
 
 interface Props {
   title?: string;
@@ -37,6 +38,7 @@ const Page: FC<Props> = () => {
         <Stats />
         <Courses />
         <Reviews />
+        <Faqs />
       </main>
 
       <Footer />

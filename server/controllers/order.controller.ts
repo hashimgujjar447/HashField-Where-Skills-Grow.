@@ -8,9 +8,26 @@ import ErrorHandler from "../utils/ErrorHandler.js";
 import { getOrders, newOrder } from "../services/order.service.js";
 import { Notification } from "../models/notification.model.js";
 
+import Stripe from "stripe";
+import { redis } from "../utils/redis.js";
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
+
 export const createOrder = asyncErrorHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { courseId, payment_info } = req.body as IOrder;
+
+    if (payment_info) {
+      if ("id" in payment_info) {
+        const paymentIntentId = payment_info.id as string;
+        const paymentIntent =
+          await stripe.paymentIntents.retrieve(paymentIntentId);
+
+        if (paymentIntent.status !== "succeeded") {
+          return next(new ErrorHandler("Payment not successful", 400));
+        }
+      }
+    }
 
     const user = await User.findById(req.user?._id);
 
@@ -38,11 +55,13 @@ export const createOrder = asyncErrorHandler(
       payment_info,
     };
 
-    if (course.purchased) {
-      course.purchased += 1;
-    }
+    await Course.findByIdAndUpdate(courseId, {
+      $inc: { purchased: 1 },
+    });
+    course.purchased = (course.purchased || 0) + 1;
+    await redis.del(courseId.toString());
+    await redis.del("allCourses");
 
-    await course.save();
     const order = await newOrder(data);
 
     const mailData = {
@@ -68,6 +87,13 @@ export const createOrder = asyncErrorHandler(
 
     user.courses.push({ courseId: course?._id });
 
+    await redis.set(
+      user._id.toString(),
+      JSON.stringify({ ...user.toObject(), password: undefined }),
+    );
+
+    await user.save();
+
     await Notification.create({
       userId: user?._id,
       title: "New Order",
@@ -88,6 +114,49 @@ export const getAllOrders = asyncErrorHandler(
       await getOrders(res);
     } catch (error) {
       return next(new ErrorHandler("Failed to get all orders", 500));
+    }
+  },
+);
+
+export const sendStripePublishableKey = asyncErrorHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const stripePublishableKey = process.env.STRIPE_PUBLISHABLE_KEY;
+
+    return res.status(200).json({
+      success: true,
+      stripePublishableKey,
+    });
+  },
+);
+
+export const newPayment = asyncErrorHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { amount } = req.body;
+
+      if (!amount || amount <= 0) {
+        return next(new ErrorHandler("Invalid payment amount", 400));
+      }
+
+      const myPayment = await stripe.paymentIntents.create({
+        amount,
+        currency: "usd",
+
+        metadata: {
+          company: "LMS",
+        },
+
+        automatic_payment_methods: {
+          enabled: true,
+        },
+      });
+
+      res.status(200).json({
+        success: true,
+        client_secret: myPayment.client_secret,
+      });
+    } catch {
+      return next(new ErrorHandler("Failed to process payment", 500));
     }
   },
 );

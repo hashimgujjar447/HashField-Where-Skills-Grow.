@@ -7,6 +7,7 @@ interface User {
   avatar?: string;
   role?: string;
   [key: string]: unknown;
+  courses: { courseId: string }[];
 }
 
 interface AuthState {

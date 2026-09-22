@@ -24,7 +24,6 @@ const EditHero: FC<Props> = () => {
 
   useEffect(() => {
     if (data?.layout?.banner) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setImage(data.layout.banner.image?.url || "");
       setTitle(data.layout.banner.title || "");
       setSubtitle(data.layout.banner.subtitle || "");
