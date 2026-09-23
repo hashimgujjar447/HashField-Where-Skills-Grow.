@@ -11,6 +11,7 @@ import {
   addReplyToReview,
   getAllCoursesForAdmin,
   deleteCourse,
+  getAllCourseReviews,
 } from "../controllers/course.controller.js";
 import {
   authorizeRoles,
@@ -41,6 +42,9 @@ router.post("/add-question", isAuthenticated, addQuestion);
 router.post("/add-question-answer", isAuthenticated, addQuestionAnswer);
 router.post("/add-review/:courseId", isAuthenticated, addReview);
 router.post("/add-reply-to-review", isAuthenticated, addReplyToReview);
+
+router.get("/:id/get-all-reviews", isAuthenticated, getAllCourseReviews);
+
 router.get(
   "/get-all-courses-for-admin",
   isAuthenticated,

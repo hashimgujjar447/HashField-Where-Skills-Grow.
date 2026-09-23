@@ -526,3 +526,23 @@ export const deleteCourse = asyncErrorHandler(
     }
   },
 );
+
+export const getAllCourseReviews = asyncErrorHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { id } = req.params;
+      const course = await Course.findById(id);
+
+      console.log(getAllCourseReviews);
+
+      const reviews = course?.reviews;
+
+      return res.status(200).json({
+        success: true,
+        reviews: reviews,
+      });
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  },
+);

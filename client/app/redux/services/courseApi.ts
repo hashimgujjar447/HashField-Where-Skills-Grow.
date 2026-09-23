@@ -44,7 +44,10 @@ const courseApi = api.injectEndpoints({
       invalidatesTags: ["Course"],
     }),
 
-    editCourse: builder.mutation<EditCourseResponse, { id: string; data: unknown }>({
+    editCourse: builder.mutation<
+      EditCourseResponse,
+      { id: string; data: unknown }
+    >({
       query: ({ id, data }) => ({
         url: `/edit-course/${id}`,
         method: "PUT",
@@ -66,7 +69,12 @@ const courseApi = api.injectEndpoints({
 
     addQuestionAnswer: builder.mutation<
       { success: boolean; message: string },
-      { question: string; courseId: string; contentId: string; questionId: string }
+      {
+        question: string;
+        courseId: string;
+        contentId: string;
+        questionId: string;
+      }
     >({
       query: (body) => ({
         url: "/add-question-answer",
@@ -86,6 +94,14 @@ const courseApi = api.injectEndpoints({
       }),
       invalidatesTags: ["Course"],
     }),
+
+    getAllCourseReviews: builder.query({
+      query: (courseId) => ({
+        url: `${courseId}/get-all-reviews`,
+        method: "GET",
+        credentials: "include",
+      }),
+    }),
   }),
 });
 
@@ -100,4 +116,5 @@ export const {
   useAddQuestionMutation,
   useAddQuestionAnswerMutation,
   useAddReviewMutation,
+  useGetAllCourseReviewsQuery,
 } = courseApi;

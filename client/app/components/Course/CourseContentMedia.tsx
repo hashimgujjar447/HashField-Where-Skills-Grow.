@@ -1,7 +1,14 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { ChevronDown, PlayCircle, Clock, Star, MessageSquare, Send } from "lucide-react";
+import {
+  ChevronDown,
+  PlayCircle,
+  Clock,
+  Star,
+  MessageSquare,
+  Send,
+} from "lucide-react";
 import VideoPlayer from "./VideoPlayer";
 import { ICourseData, IQuestion } from "@/app/types/course";
 import {
@@ -9,8 +16,11 @@ import {
   useAddQuestionAnswerMutation,
   useAddReviewMutation,
   useGetCourseContentQuery,
+  useGetAllCourseReviewsQuery,
 } from "@/app/redux/services/courseApi";
 import { useSelector } from "react-redux";
+import { RootState } from "@/app/redux/store";
+import toast from "react-hot-toast";
 
 type CourseContentBySection = Record<string, ICourseData[]>;
 type Tab = "overview" | "resources" | "questions" | "reviews";
@@ -28,7 +38,15 @@ function formatLength(minutes: number): string {
   return `${Math.floor(minutes / 60)}h ${minutes % 60}m`;
 }
 
-function Avatar({ src, name, size = 36 }: { src?: string; name?: string; size?: number }) {
+function Avatar({
+  src,
+  name,
+  size = 36,
+}: {
+  src?: string;
+  name?: string;
+  size?: number;
+}) {
   const initials = name?.charAt(0)?.toUpperCase() ?? "U";
   return src ? (
     <img
@@ -78,18 +96,32 @@ function StarRating({
   );
 }
 
-const CourseContentMedia: React.FC<Props> = ({ data, id, activeVideo, setActiveVideo }) => {
-  const allLectures = useMemo<ICourseData[]>(() => Object.values(data).flat(), [data]);
+const CourseContentMedia: React.FC<Props> = ({
+  data,
+  id,
+  activeVideo,
+  setActiveVideo,
+}) => {
+  const allLectures = useMemo<ICourseData[]>(
+    () => Object.values(data).flat(),
+    [data],
+  );
   const sections = useMemo(() => Object.entries(data), [data]);
+  const { data: courseReviews } = useGetAllCourseReviewsQuery(id);
 
-  const user = useSelector((state: { auth: { user: { name?: string; avatar?: { url?: string } | string } | null } }) => state.auth.user);
-  const avatarUrl = typeof user?.avatar === "object" ? user?.avatar?.url : user?.avatar;
+  const user = useSelector((state: RootState) => state.auth.user);
+  const avatarUrl =
+    typeof user?.avatar === "object" ? user?.avatar?.url : user?.avatar;
 
-  const [openSections, setOpenSections] = useState<Record<string, boolean>>(() => {
-    const init: Record<string, boolean> = {};
-    sections.forEach(([name]) => { init[name] = true; });
-    return init;
-  });
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>(
+    () => {
+      const init: Record<string, boolean> = {};
+      sections.forEach(([name]) => {
+        init[name] = true;
+      });
+      return init;
+    },
+  );
 
   const [activeTab, setActiveTab] = useState<Tab>("overview");
   const [newQuestion, setNewQuestion] = useState("");
@@ -99,7 +131,8 @@ const CourseContentMedia: React.FC<Props> = ({ data, id, activeVideo, setActiveV
   const [reviewText, setReviewText] = useState("");
 
   const [addQuestion, { isLoading: qSubmitting }] = useAddQuestionMutation();
-  const [addQuestionAnswer, { isLoading: rSubmitting }] = useAddQuestionAnswerMutation();
+  const [addQuestionAnswer, { isLoading: rSubmitting }] =
+    useAddQuestionAnswerMutation();
   const [addReview, { isLoading: revSubmitting }] = useAddReviewMutation();
   const { refetch } = useGetCourseContentQuery(id);
 
@@ -111,7 +144,11 @@ const CourseContentMedia: React.FC<Props> = ({ data, id, activeVideo, setActiveV
 
   const handleSubmitQuestion = async () => {
     if (!newQuestion.trim() || !activeLecture) return;
-    await addQuestion({ question: newQuestion.trim(), courseId: id, contentId: activeLecture._id });
+    await addQuestion({
+      question: newQuestion.trim(),
+      courseId: id,
+      contentId: activeLecture._id,
+    });
     setNewQuestion("");
     refetch();
   };
@@ -119,7 +156,12 @@ const CourseContentMedia: React.FC<Props> = ({ data, id, activeVideo, setActiveV
   const handleSubmitReply = async (questionId: string) => {
     const text = replyText[questionId]?.trim();
     if (!text || !activeLecture) return;
-    await addQuestionAnswer({ question: text, courseId: id, contentId: activeLecture._id, questionId });
+    await addQuestionAnswer({
+      question: text,
+      courseId: id,
+      contentId: activeLecture._id,
+      questionId,
+    });
     setReplyText((prev) => ({ ...prev, [questionId]: "" }));
     setOpenReplyFor(null);
     refetch();
@@ -127,6 +169,16 @@ const CourseContentMedia: React.FC<Props> = ({ data, id, activeVideo, setActiveV
 
   const handleSubmitReview = async () => {
     if (!reviewText.trim()) return;
+
+    const isReviewAlreadyExist = courseReviews?.reviews.some(
+      (r) => r.user === user?._id,
+    );
+
+    if (isReviewAlreadyExist) {
+      toast.error("Review already exist");
+      return;
+    }
+
     await addReview({ courseId: id, review: reviewText.trim(), rating });
     setReviewText("");
     setRating(1);
@@ -224,13 +276,19 @@ const CourseContentMedia: React.FC<Props> = ({ data, id, activeVideo, setActiveV
                     >
                       <span className="text-[#39c1f3]">🔗</span>
                       <div className="min-w-0">
-                        <p className="font-medium text-gray-200">{link.title || "Resource"}</p>
-                        <p className="truncate text-xs text-gray-500">{link.url}</p>
+                        <p className="font-medium text-gray-200">
+                          {link.title || "Resource"}
+                        </p>
+                        <p className="truncate text-xs text-gray-500">
+                          {link.url}
+                        </p>
                       </div>
                     </a>
                   ))
                 ) : (
-                  <p className="text-sm text-gray-500">No resources for this lecture.</p>
+                  <p className="text-sm text-gray-500">
+                    No resources for this lecture.
+                  </p>
                 )}
               </div>
             )}
@@ -260,17 +318,26 @@ const CourseContentMedia: React.FC<Props> = ({ data, id, activeVideo, setActiveV
                 </div>
 
                 <div className="space-y-5">
-                  {activeLecture.questions && activeLecture.questions.length > 0 ? (
+                  {activeLecture.questions &&
+                  activeLecture.questions.length > 0 ? (
                     activeLecture.questions.map((q: IQuestion) => (
                       <div key={q._id} className="flex gap-3">
                         <Avatar name="User" size={38} />
                         <div className="flex-1">
-                          <p className="text-sm font-semibold text-gray-200">Student</p>
-                          <p className="mt-0.5 text-sm text-gray-300">{q.question}</p>
+                          <p className="text-sm font-semibold text-gray-200">
+                            Student
+                          </p>
+                          <p className="mt-0.5 text-sm text-gray-300">
+                            {q.question}
+                          </p>
                           <div className="mt-2 flex items-center gap-3">
                             <button
                               onClick={() =>
-                                setOpenReplyFor(openReplyFor === q._id ? null : q._id ?? null)
+                                setOpenReplyFor(
+                                  openReplyFor === q._id
+                                    ? null
+                                    : (q._id ?? null),
+                                )
                               }
                               className="text-xs text-gray-400 transition hover:text-[#39c1f3]"
                             >
@@ -287,7 +354,9 @@ const CourseContentMedia: React.FC<Props> = ({ data, id, activeVideo, setActiveV
                               {q.questionReplies.map((reply, i) => (
                                 <div key={i} className="flex gap-2">
                                   <Avatar name="U" size={28} />
-                                  <p className="text-sm text-gray-400">{reply.comment}</p>
+                                  <p className="text-sm text-gray-400">
+                                    {reply.comment}
+                                  </p>
                                 </div>
                               ))}
                             </div>
@@ -300,16 +369,25 @@ const CourseContentMedia: React.FC<Props> = ({ data, id, activeVideo, setActiveV
                                 placeholder="Write a reply…"
                                 value={replyText[q._id ?? ""] ?? ""}
                                 onChange={(e) =>
-                                  setReplyText((prev) => ({ ...prev, [q._id ?? ""]: e.target.value }))
+                                  setReplyText((prev) => ({
+                                    ...prev,
+                                    [q._id ?? ""]: e.target.value,
+                                  }))
                                 }
                                 onKeyDown={(e) =>
-                                  e.key === "Enter" && q._id && handleSubmitReply(q._id)
+                                  e.key === "Enter" &&
+                                  q._id &&
+                                  handleSubmitReply(q._id)
                                 }
                                 className="flex-1 rounded-lg border border-gray-700 bg-[#111827] px-3 py-2 text-sm text-gray-200 outline-none focus:border-[#39c1f3]"
                               />
                               <button
-                                onClick={() => q._id && handleSubmitReply(q._id)}
-                                disabled={rSubmitting || !replyText[q._id ?? ""]?.trim()}
+                                onClick={() =>
+                                  q._id && handleSubmitReply(q._id)
+                                }
+                                disabled={
+                                  rSubmitting || !replyText[q._id ?? ""]?.trim()
+                                }
                                 className="flex items-center gap-1.5 rounded-lg bg-[#39c1f3] px-3 py-2 text-sm font-medium text-white disabled:opacity-50"
                               >
                                 <Send className="h-3.5 w-3.5" />
@@ -320,7 +398,9 @@ const CourseContentMedia: React.FC<Props> = ({ data, id, activeVideo, setActiveV
                       </div>
                     ))
                   ) : (
-                    <p className="text-sm text-gray-500">No questions yet. Be the first to ask!</p>
+                    <p className="text-sm text-gray-500">
+                      No questions yet. Be the first to ask!
+                    </p>
                   )}
                 </div>
               </div>
@@ -330,11 +410,14 @@ const CourseContentMedia: React.FC<Props> = ({ data, id, activeVideo, setActiveV
               <div className="space-y-5">
                 <div className="flex gap-3">
                   <Avatar src={avatarUrl} name={user?.name} size={40} />
+
                   <div className="flex-1">
                     <p className="mb-2 text-sm font-medium text-gray-200">
                       Give a Rating <span className="text-red-400">*</span>
                     </p>
+
                     <StarRating value={rating} onChange={setRating} />
+
                     <textarea
                       rows={4}
                       placeholder="Write your comment…"
@@ -342,6 +425,7 @@ const CourseContentMedia: React.FC<Props> = ({ data, id, activeVideo, setActiveV
                       onChange={(e) => setReviewText(e.target.value)}
                       className="mt-3 w-full rounded-lg border border-gray-700 bg-[#111827] px-4 py-3 text-sm text-gray-200 outline-none placeholder:text-gray-500 focus:border-[#39c1f3]"
                     />
+
                     <div className="mt-3 flex justify-end">
                       <button
                         onClick={handleSubmitReview}
@@ -353,6 +437,45 @@ const CourseContentMedia: React.FC<Props> = ({ data, id, activeVideo, setActiveV
                     </div>
                   </div>
                 </div>
+
+                {courseReviews && courseReviews?.reviews?.length > 0 ? (
+                  <div className="space-y-5">
+                    {courseReviews?.reviews?.map((review) => (
+                      <div key={review._id} className="flex gap-3">
+                        <Avatar name="U" size={38} />
+
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <p className="text-sm font-semibold text-gray-200">
+                              {review.user?.name || "Student"}
+                            </p>
+
+                            <div className="flex items-center gap-1">
+                              {[...Array(5)].map((_, i) => (
+                                <Star
+                                  key={i}
+                                  className={`h-4 w-4 ${
+                                    i < review.rating
+                                      ? "fill-yellow-400 text-yellow-400"
+                                      : "text-gray-600"
+                                  }`}
+                                />
+                              ))}
+                            </div>
+                          </div>
+
+                          <p className="mt-1 text-sm text-gray-300">
+                            {review.comment}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-gray-500">
+                    No reviews yet. Be the first to review!
+                  </p>
+                )}
               </div>
             )}
           </div>
@@ -367,20 +490,30 @@ const CourseContentMedia: React.FC<Props> = ({ data, id, activeVideo, setActiveV
         <div className="overflow-y-auto lg:max-h-[calc(100vh-53px)]">
           {sections.map(([sectionName, lectures]) => {
             const isOpen = openSections[sectionName];
-            const sectionStartIdx = allLectures.findIndex((l) => l.videoSection === sectionName);
+            const sectionStartIdx = allLectures.findIndex(
+              (l) => l.videoSection === sectionName,
+            );
             const totalTime = sectionTotal(lectures);
 
             return (
               <div key={sectionName} className="border-b border-gray-800">
                 <button
                   type="button"
-                  onClick={() => setOpenSections((prev) => ({ ...prev, [sectionName]: !prev[sectionName] }))}
+                  onClick={() =>
+                    setOpenSections((prev) => ({
+                      ...prev,
+                      [sectionName]: !prev[sectionName],
+                    }))
+                  }
                   className="flex w-full items-start justify-between gap-3 px-4 py-4 text-left hover:bg-gray-800/50"
                 >
                   <div>
-                    <p className="text-sm font-semibold text-white">{sectionName}</p>
+                    <p className="text-sm font-semibold text-white">
+                      {sectionName}
+                    </p>
                     <p className="mt-0.5 text-xs text-gray-400">
-                      {lectures.length} {lectures.length === 1 ? "Lesson" : "Lessons"}
+                      {lectures.length}{" "}
+                      {lectures.length === 1 ? "Lesson" : "Lessons"}
                       {totalTime && ` · ${totalTime}`}
                     </p>
                   </div>
@@ -398,9 +531,14 @@ const CourseContentMedia: React.FC<Props> = ({ data, id, activeVideo, setActiveV
                         <li key={lecture._id}>
                           <button
                             type="button"
-                            onClick={() => { setActiveVideo(globalIdx); setActiveTab("overview"); }}
+                            onClick={() => {
+                              setActiveVideo(globalIdx);
+                              setActiveTab("overview");
+                            }}
                             className={`flex w-full items-start gap-3 px-4 py-3 text-left transition ${
-                              isActive ? "bg-[#39c1f3]/10" : "hover:bg-gray-800/40"
+                              isActive
+                                ? "bg-[#39c1f3]/10"
+                                : "hover:bg-gray-800/40"
                             }`}
                           >
                             <PlayCircle
@@ -409,7 +547,9 @@ const CourseContentMedia: React.FC<Props> = ({ data, id, activeVideo, setActiveV
                               }`}
                             />
                             <div className="min-w-0 flex-1">
-                              <p className={`text-sm leading-snug ${isActive ? "font-medium text-[#39c1f3]" : "text-gray-300"}`}>
+                              <p
+                                className={`text-sm leading-snug ${isActive ? "font-medium text-[#39c1f3]" : "text-gray-300"}`}
+                              >
                                 {lecture.title}
                               </p>
                               {lecture.videoLength > 0 && (
