@@ -1,5 +1,6 @@
 import {
   getNotifications,
+  markAllNotificationsAsRead,
   updateNotificationStatus,
 } from "../controllers/notification.controller.js";
 
@@ -23,6 +24,13 @@ router.put(
   isAuthenticated,
   authorizeRoles("admin"),
   updateNotificationStatus,
+);
+
+router.put(
+  "/update-all-notification",
+  isAuthenticated,
+  authorizeRoles("admin"),
+  markAllNotificationsAsRead,
 );
 
 export default router;

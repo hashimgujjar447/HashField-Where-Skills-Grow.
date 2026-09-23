@@ -51,6 +51,19 @@ export const updateNotificationStatus = asyncErrorHandler(
     }
   },
 );
+export const markAllNotificationsAsRead = asyncErrorHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    await Notification.updateMany(
+      { status: "unread" },
+      { $set: { status: "read" } },
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "All notifications marked as read",
+    });
+  },
+);
 
 cron.schedule("0 0 0 * * *", async () => {
   const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
