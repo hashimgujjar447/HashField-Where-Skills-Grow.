@@ -4,48 +4,34 @@ import React from "react";
 import Link from "next/link";
 
 export const navItemsData = [
-  {
-    name: "Home",
-    url: "/",
-  },
-  {
-    name: "Courses",
-    url: "/courses",
-  },
-  {
-    name: "About",
-    url: "/about",
-  },
-  {
-    name: "Policy",
-    url: "/policy",
-  },
-  {
-    name: "FAQ",
-    url: "/faq",
-  },
+  { name: "Home", url: "/" },
+  { name: "Courses", url: "/courses" },
+  { name: "About", url: "/about" },
+  { name: "Policy", url: "/policy" },
+  { name: "FAQ", url: "/faq" },
 ];
 
 type Props = {
   activeItem: number;
   isMobile: boolean;
+  onClose?: () => void;
 };
 
-const NavItems: React.FC<Props> = ({ activeItem, isMobile }) => {
+const NavItems: React.FC<Props> = ({ activeItem, isMobile, onClose }) => {
   return (
     <>
       {!isMobile && (
-        <div className="hidden min-[800px]:flex">
-          {navItemsData.map((i, index) => (
-            <Link href={i.url} key={index}>
+        <div className="hidden min-[800px]:flex items-center gap-1">
+          {navItemsData.map((item, index) => (
+            <Link href={item.url} key={index}>
               <span
-                className={`${
+                className={`px-4 py-2 rounded-lg font-Poppins text-[15px] transition-colors ${
                   activeItem === index
-                    ? "dark:text-[#37a39a] text-[crimson]"
-                    : "dark:text-white text-black"
-                } text-[18px] px-6 font-Poppins font-[400]`}
+                    ? "text-[#39c1f3] font-semibold"
+                    : "text-gray-700 dark:text-gray-300 hover:text-[#39c1f3] dark:hover:text-[#39c1f3]"
+                }`}
               >
-                {i.name}
+                {item.name}
               </span>
             </Link>
           ))}
@@ -53,17 +39,17 @@ const NavItems: React.FC<Props> = ({ activeItem, isMobile }) => {
       )}
 
       {isMobile && (
-        <div className="min-[800px]:hidden mt-5">
-          {navItemsData.map((i, index) => (
-            <Link href={i.url} key={index}>
+        <div className="py-2 space-y-1">
+          {navItemsData.map((item, index) => (
+            <Link href={item.url} key={index} onClick={onClose}>
               <span
-                className={`${
+                className={`block px-5 py-3 rounded-lg font-Poppins text-[15px] transition-colors ${
                   activeItem === index
-                    ? "dark:text-[#37a39a] text-[crimson]"
-                    : "dark:text-white text-black"
-                } block py-5 text-[18px] px-6 font-Poppins font-[400]`}
+                    ? "bg-[#39c1f3]/10 text-[#39c1f3] font-semibold"
+                    : "text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-800/60"
+                }`}
               >
-                {i.name}
+                {item.name}
               </span>
             </Link>
           ))}

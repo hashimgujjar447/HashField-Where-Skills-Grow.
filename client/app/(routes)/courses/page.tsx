@@ -20,16 +20,16 @@ const CoursesPage = () => {
 
   if (isLoading) {
     return (
-      <div className="flex h-screen items-center justify-center">
-        <p>Loading .....</p>
+      <div className="flex h-screen items-center justify-center bg-white dark:bg-[#0b0f17]">
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-[#39c1f3]" />
       </div>
     );
   }
 
   if (isError) {
     return (
-      <div className="flex h-screen items-center justify-center">
-        <p>Error while loading courses.</p>
+      <div className="flex h-screen items-center justify-center bg-white dark:bg-[#0b0f17]">
+        <p className="text-sm text-gray-500 dark:text-gray-400">Failed to load courses. Please refresh.</p>
       </div>
     );
   }

@@ -10,7 +10,6 @@ import { useSession } from "next-auth/react";
 import { useSocialAuthMutation } from "../redux/features/auth/authApi";
 import Image from "next/image";
 import toast from "react-hot-toast";
-import { setAccessToken } from "../redux/features/auth/authSlice";
 
 type Props = {
   open: boolean;
@@ -23,18 +22,20 @@ const Header: FC<Props> = ({ open, setOpen, activeItem }) => {
   const [active, setActive] = useState(false);
   const [openSideBar, setOpenSidebar] = useState(false);
 
-  const { user } = useSelector((state: any) => state.auth);
-
+  const { user } = useSelector(
+    (state: {
+      auth: {
+        user: { avatar?: { url?: string }; name?: string; role?: string } | null;
+      };
+    }) => state.auth
+  );
   const { data, status } = useSession();
 
-  const [
-    socialAuth,
-    { isSuccess: isSocialAuthSuccess, isLoading: isSocialAuthLoading },
-  ] = useSocialAuthMutation();
+  const [socialAuth, { isSuccess: isSocialAuthSuccess, isLoading: isSocialAuthLoading }] =
+    useSocialAuthMutation();
 
   useEffect(() => {
     if (status === "loading") return;
-
     if (!user && data?.user && !isSocialAuthLoading) {
       socialAuth({
         email: data.user.email,
@@ -47,110 +48,148 @@ const Header: FC<Props> = ({ open, setOpen, activeItem }) => {
   }, [data, status]);
 
   useEffect(() => {
-    if (isSocialAuthSuccess) {
-      toast.success("Login Successfully");
-    }
+    if (isSocialAuthSuccess) toast.success("Login Successfully");
   }, [isSocialAuthSuccess]);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setActive(window.scrollY > 80);
-    };
-
+    const handleScroll = () => setActive(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const handleClose = (e: React.MouseEvent<HTMLDivElement>) => {
-    if ((e.target as HTMLElement).id === "screen") {
-      setOpenSidebar(false);
-    }
+    if ((e.target as HTMLElement).id === "screen") setOpenSidebar(false);
   };
 
   return (
-    <div className="w-full  relative">
-      <div
-        className={`${
-          active
-            ? "dark:bg-opacity-50 dark:bg-linear-to-b bg-white dark:from-gray-900 dark:to-black fixed top-0 left-0 w-full h-[80px] z-[80] border-b dark:border-[#ffffff1c] shadow-xl transition duration-500"
-            : "w-full border-b dark:border-[#ffffff1c] h-[80px] z-[80] dark:shadow"
-        }`}
-      >
-        <div className="w-[95%] min-[800px]:w-[92%] m-auto py-2 h-full">
-          <div className="w-full h-[80px] flex items-center justify-between p-3">
-            <div>
+    <header
+      className={`sticky top-0 z-[80] w-full bg-white dark:bg-[#0b0f17] border-b border-gray-100 dark:border-gray-800/80 transition-shadow duration-300 ${
+        active ? "shadow-sm dark:shadow-none" : ""
+      }`}
+    >
+      <div className="mx-auto flex h-[76px] w-full max-w-[1500px] items-center justify-between px-4 sm:px-8 lg:px-10">
+        <Link
+          href="/"
+          className="font-Poppins text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
+        >
+          ELearn<span className="text-[#39c1f3]">ing</span>
+        </Link>
+
+        <div className="flex items-center gap-3">
+          <NavItems activeItem={activeItem} isMobile={false} />
+
+          <div className="hidden min-[800px]:flex items-center gap-2 pl-2">
+            <ThemeSwitcher />
+
+            {user ? (
+              <Link href="/profile" className="flex items-center">
+                <Image
+                  src={user?.avatar?.url || "/assets/avatar.jfif"}
+                  alt={user?.name || "User Avatar"}
+                  width={34}
+                  height={34}
+                  className="rounded-full object-cover cursor-pointer ring-2 ring-transparent hover:ring-[#39c1f3] transition-all"
+                  style={{
+                    border: activeItem === 6 ? "2px solid #39c1f3" : "",
+                  }}
+                />
+              </Link>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setOpen(true)}
+                className="flex items-center gap-1.5 rounded-lg bg-[#39c1f3] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#25addf]"
+              >
+                <HiOutlineUserCircle size={18} />
+                <span>Sign In</span>
+              </button>
+            )}
+          </div>
+
+          <div className="flex min-[800px]:hidden items-center gap-1.5">
+            <ThemeSwitcher />
+
+            <button
+              type="button"
+              onClick={() => setOpenSidebar(true)}
+              aria-label="Open navigation menu"
+              className="flex h-9 w-9 items-center justify-center rounded-lg text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-slate-800 transition-colors"
+            >
+              <HiOutlineMenuAlt3 size={24} />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {openSideBar && (
+        <div
+          className="fixed inset-0 z-[99999] bg-black/50 transition-opacity"
+          onClick={handleClose}
+          id="screen"
+        >
+          <div className="fixed right-0 top-0 z-[999999] flex h-screen w-[78%] max-w-[320px] flex-col bg-white shadow-2xl dark:bg-[#0d1526] sm:w-[60%]">
+            <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4 dark:border-gray-800">
               <Link
                 href="/"
-                className="text-[25px] font-Poppins font-[500] text-black dark:text-white"
+                className="font-Poppins text-lg font-bold text-gray-900 dark:text-white"
+                onClick={() => setOpenSidebar(false)}
               >
-                ELearning
+                ELearn<span className="text-[#39c1f3]">ing</span>
               </Link>
+              <button
+                onClick={() => setOpenSidebar(false)}
+                className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-slate-800"
+              >
+                ✕
+              </button>
             </div>
 
-            <div className="flex items-center">
-              <NavItems activeItem={activeItem} isMobile={false} />
+            <div className="flex-1 overflow-y-auto px-2 py-3">
+              <NavItems
+                activeItem={activeItem}
+                isMobile={true}
+                onClose={() => setOpenSidebar(false)}
+              />
+            </div>
 
-              <ThemeSwitcher />
-
-              <div className="min-[800px]:hidden">
-                <HiOutlineMenuAlt3
-                  size={25}
-                  className="cursor-pointer dark:text-white text-black"
-                  onClick={() => setOpenSidebar(true)}
-                />
-              </div>
-
-              <div className="max-[800px]:hidden">
-                {user ? (
-                  <Link href="/profile">
-                    <Image
-                      src={user?.avatar?.url || "/assets/avatar.jfif"}
-                      alt="User Avatar"
-                      width={25}
-                      height={25}
-                      className="rounded-full cursor-pointer"
-                      style={{
-                        border: activeItem === 6 ? "2px solid #ffc107" : "",
-                      }}
-                    />
-                  </Link>
-                ) : (
-                  <HiOutlineUserCircle
-                    size={25}
-                    className="cursor-pointer dark:text-white text-black"
-                    onClick={() => setOpen(true)}
+            <div className="border-t border-gray-100 p-4 dark:border-gray-800">
+              {user ? (
+                <Link
+                  href="/profile"
+                  className="flex items-center gap-3 rounded-xl p-2 hover:bg-gray-50 dark:hover:bg-slate-800/60 transition-colors"
+                  onClick={() => setOpenSidebar(false)}
+                >
+                  <Image
+                    src={user?.avatar?.url || "/assets/avatar.jfif"}
+                    alt="User"
+                    width={36}
+                    height={36}
+                    className="rounded-full object-cover"
                   />
-                )}
-              </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-semibold text-gray-900 dark:text-white">
+                      {user?.name || "Student"}
+                    </p>
+                    <p className="text-xs text-[#39c1f3]">View Profile</p>
+                  </div>
+                </Link>
+              ) : (
+                <button
+                  onClick={() => {
+                    setOpen(true);
+                    setOpenSidebar(false);
+                  }}
+                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#39c1f3] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#25addf]"
+                >
+                  <HiOutlineUserCircle size={20} />
+                  <span>Sign In / Register</span>
+                </button>
+              )}
             </div>
           </div>
         </div>
-
-        {openSideBar && (
-          <div
-            className="fixed w-full h-screen top-0 left-0 z-[99999] dark:bg-[unset] bg-[#00000024]"
-            onClick={handleClose}
-            id="screen"
-          >
-            <div className="w-[70%] fixed z-[99999999] h-screen bg-white dark:bg-slate-900 dark:bg-opacity-90 top-0 right-0">
-              <NavItems activeItem={activeItem} isMobile={true} />
-
-              <HiOutlineUserCircle
-                size={25}
-                className="cursor-pointer ml-5 my-2 text-black dark:text-white"
-                onClick={() => setOpen(true)}
-              />
-
-              <br />
-              <br />
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
+      )}
+    </header>
   );
 };
 

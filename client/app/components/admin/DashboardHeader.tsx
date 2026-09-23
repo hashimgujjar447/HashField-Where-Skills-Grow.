@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { FC, useState, useRef, useEffect } from "react";
 import { ThemeSwitcher } from "@/app/utils/ThemeSwitcher";
@@ -75,7 +75,7 @@ const DashboardHeader: FC<Props> = ({ open, setOpen }) => {
           </button>
 
           {notifOpen && (
-            <div className="absolute right-0 top-11 z-50 w-80 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-[#111C43] sm:w-96">
+            <div className="absolute right-0 top-12 z-50 w-[calc(100vw-32px)] max-w-sm sm:w-96 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-[#111C43]">
               <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3 dark:border-slate-700">
                 <p className="text-sm font-semibold text-slate-900 dark:text-white">Notifications</p>
                 <button className="text-xs font-medium text-indigo-600 hover:underline dark:text-indigo-400">

@@ -44,7 +44,6 @@ const ChangePassword = () => {
       }).unwrap();
 
       toast.success("Password updated successfully");
-
       setOldPassword("");
       setNewPassword("");
       setConfirmPassword("");
@@ -54,141 +53,116 @@ const ChangePassword = () => {
   };
 
   return (
-    <div className="flex min-h-[70vh] items-center justify-center px-5 py-12 font-poppins">
-      <div className="w-full max-w-lg">
-        <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[#39c1f3]/10">
-            <HiOutlineLockClosed size={27} className="text-[#39c1f3]" />
-          </div>
-
-          <h1 className="font-josefin text-3xl font-bold text-white">
-            Change Password
-          </h1>
-
-          <p className="mt-2 text-xs text-gray-500 sm:text-sm">
-            Update your password to keep your account secure.
-          </p>
-        </div>
-
-        <form
-          onSubmit={(e) => {
-            handleSubmit(e);
-          }}
-          className="rounded-2xl border border-gray-800 bg-[#111827] p-6 shadow-xl sm:p-8"
-        >
-          <div className="space-y-5">
-            <div>
-              <label className="mb-2 block text-xs font-medium text-gray-300">
-                Current Password
-              </label>
-
-              <div className="relative">
-                <HiOutlineLockClosed
-                  size={18}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"
-                />
-
-                <input
-                  type={showOldPassword ? "text" : "password"}
-                  value={oldPassword}
-                  onChange={(e) => setOldPassword(e.target.value)}
-                  placeholder="Enter current password"
-                  className="h-12 w-full rounded-lg border border-gray-700 bg-[#0b0f17] pl-11 pr-12 text-sm text-white outline-none transition-all placeholder:text-gray-600 focus:border-[#39c1f3] focus:ring-2 focus:ring-[#39c1f3]/10"
-                />
-
-                <button
-                  type="button"
-                  onClick={() => setShowOldPassword(!showOldPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-[#39c1f3]"
-                >
-                  {showOldPassword ? (
-                    <HiOutlineEyeOff size={19} />
-                  ) : (
-                    <HiOutlineEye size={19} />
-                  )}
-                </button>
-              </div>
-            </div>
-
-            <div>
-              <label className="mb-2 block text-xs font-medium text-gray-300">
-                New Password
-              </label>
-
-              <div className="relative">
-                <HiOutlineLockClosed
-                  size={18}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"
-                />
-
-                <input
-                  type={showNewPassword ? "text" : "password"}
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="Enter new password"
-                  className="h-12 w-full rounded-lg border border-gray-700 bg-[#0b0f17] pl-11 pr-12 text-sm text-white outline-none transition-all placeholder:text-gray-600 focus:border-[#39c1f3] focus:ring-2 focus:ring-[#39c1f3]/10"
-                />
-
-                <button
-                  type="button"
-                  onClick={() => setShowNewPassword(!showNewPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-[#39c1f3]"
-                >
-                  {showNewPassword ? (
-                    <HiOutlineEyeOff size={19} />
-                  ) : (
-                    <HiOutlineEye size={19} />
-                  )}
-                </button>
-              </div>
-            </div>
-
-            <div>
-              <label className="mb-2 block text-xs font-medium text-gray-300">
-                Confirm New Password
-              </label>
-
-              <div className="relative">
-                <HiOutlineLockClosed
-                  size={18}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"
-                />
-
-                <input
-                  type={showConfirmPassword ? "text" : "password"}
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Confirm new password"
-                  className="h-12 w-full rounded-lg border border-gray-700 bg-[#0b0f17] pl-11 pr-12 text-sm text-white outline-none transition-all placeholder:text-gray-600 focus:border-[#39c1f3] focus:ring-2 focus:ring-[#39c1f3]/10"
-                />
-
-                <button
-                  type="button"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-[#39c1f3]"
-                >
-                  {showConfirmPassword ? (
-                    <HiOutlineEyeOff size={19} />
-                  ) : (
-                    <HiOutlineEye size={19} />
-                  )}
-                </button>
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="h-12 w-full rounded-lg bg-[#39c1f3] text-sm font-semibold text-white shadow-lg transition-all hover:bg-[#25addf] disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {isLoading ? "Updating..." : "Update Password"}
-            </button>
-          </div>
-        </form>
-
-        <p className="mt-5 text-center text-xs text-gray-600">
-          Never share your password with anyone.
+    <div className="w-full rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111827] p-4 sm:p-8 shadow-sm font-Poppins min-w-0">
+      <div className="mb-6 pb-4 border-b border-gray-100 dark:border-gray-800">
+        <h2 className="text-lg sm:text-xl font-bold font-Josefin text-gray-900 dark:text-white">
+          Change Password
+        </h2>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+          Keep your account secure by choosing a strong password
         </p>
+      </div>
+
+      <div className="flex flex-col items-center">
+        <form onSubmit={handleSubmit} className="w-full max-w-md space-y-5">
+          <div className="space-y-1.5">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+              Current Password
+            </label>
+            <div className="relative">
+              <HiOutlineLockClosed
+                size={18}
+                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"
+              />
+              <input
+                type={showOldPassword ? "text" : "password"}
+                value={oldPassword}
+                onChange={(e) => setOldPassword(e.target.value)}
+                placeholder="Enter current password"
+                className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#0b0f17] pl-10 pr-10 py-3 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 outline-none transition-all focus:border-[#39c1f3] focus:ring-1 focus:ring-[#39c1f3]"
+              />
+              <button
+                type="button"
+                onClick={() => setShowOldPassword(!showOldPassword)}
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#39c1f3]"
+              >
+                {showOldPassword ? (
+                  <HiOutlineEyeOff size={18} />
+                ) : (
+                  <HiOutlineEye size={18} />
+                )}
+              </button>
+            </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+              New Password
+            </label>
+            <div className="relative">
+              <HiOutlineLockClosed
+                size={18}
+                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"
+              />
+              <input
+                type={showNewPassword ? "text" : "password"}
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="Enter new password"
+                className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#0b0f17] pl-10 pr-10 py-3 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 outline-none transition-all focus:border-[#39c1f3] focus:ring-1 focus:ring-[#39c1f3]"
+              />
+              <button
+                type="button"
+                onClick={() => setShowNewPassword(!showNewPassword)}
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#39c1f3]"
+              >
+                {showNewPassword ? (
+                  <HiOutlineEyeOff size={18} />
+                ) : (
+                  <HiOutlineEye size={18} />
+                )}
+              </button>
+            </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+              Confirm New Password
+            </label>
+            <div className="relative">
+              <HiOutlineLockClosed
+                size={18}
+                className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"
+              />
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Confirm new password"
+                className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#0b0f17] pl-10 pr-10 py-3 text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 outline-none transition-all focus:border-[#39c1f3] focus:ring-1 focus:ring-[#39c1f3]"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#39c1f3]"
+              >
+                {showConfirmPassword ? (
+                  <HiOutlineEyeOff size={18} />
+                ) : (
+                  <HiOutlineEye size={18} />
+                )}
+              </button>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full py-3 px-6 rounded-xl font-medium text-sm text-white transition-all shadow-sm bg-[#39c1f3] hover:bg-[#25addf] disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            {isLoading ? "Updating..." : "Update Password"}
+          </button>
+        </form>
       </div>
     </div>
   );

@@ -1,20 +1,21 @@
 "use client";
 
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import ProfileSidebar from "./ProfileSidebar";
 import ProfileInfo from "./ProfileInfo";
+import ChangePassword from "./ChangePassword";
+import EnrolledCourses from "./EnrolledCourses";
 import { useLogoutMutation } from "@/app/redux/features/auth/authApi";
 import { signOut } from "next-auth/react";
 import toast from "react-hot-toast";
-import ChangePassword from "./ChangePassword";
 
 type Props = {
-  user: unknown | null;
+  user: any;
 };
 
 const Profile: FC<Props> = ({ user }) => {
-  const [activeTab, setActiveTab] = React.useState(1);
-  const [avatar, setAvatar] = React.useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState(1);
+  const [avatar, setAvatar] = useState<string | null>(null);
 
   const [logout, { isLoading: isLoggingOut }] = useLogoutMutation();
 
@@ -30,55 +31,37 @@ const Profile: FC<Props> = ({ user }) => {
   };
 
   return (
-    <div className="w-[85%] mx-auto flex gap-8 py-10">
-      <aside className="w-[310px] shrink-0">
-        <div className="sticky top-[120px]">
-          <div
-            className="
-              w-full
-              min-h-[450px]
-              bg-white
-              dark:bg-slate-900
-              border
-              border-gray-200
-              dark:border-[#ffffff1d]
-              rounded-[5px]
-              shadow-sm
-            "
-          >
-            <ProfileSidebar
-              user={user as any}
-              avatar={avatar}
-              activeTab={activeTab}
-              setActiveTab={setActiveTab}
-              logoutHandler={logoutHandler}
-            />
+    <div className="w-full max-w-6xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 min-w-0">
+      <div className="flex flex-col min-[800px]:flex-row gap-4 sm:gap-6 lg:gap-8 items-start w-full min-w-0">
+        <aside className="w-full min-[800px]:w-[280px] lg:w-[300px] min-[800px]:shrink-0 min-w-0">
+          <ProfileSidebar
+            user={user}
+            avatar={avatar}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            logoutHandler={logoutHandler}
+          />
+          {isLoggingOut && (
+            <p className="mt-2 text-center text-xs text-gray-500 dark:text-gray-400">
+              Logging out...
+            </p>
+          )}
+        </aside>
 
-            {isLoggingOut && (
-              <p className="text-center text-sm text-gray-500 dark:text-gray-400 pb-3">
-                Logging out...
-              </p>
-            )}
-          </div>
-        </div>
-      </aside>
-
-      <main className="flex-1 min-h-[500px]">
-        {activeTab === 1 && (
-          <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-[#ffffff1d] rounded-[5px] shadow-sm">
+        <main className="w-full flex-1 min-w-0">
+          {activeTab === 1 && (
             <ProfileInfo
-              user={user as any}
+              user={user}
               avatar={avatar}
               setAvatar={setAvatar}
             />
-          </div>
-        )}
-        {activeTab === 2 && (
-          <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-[#ffffff1d] rounded-[5px] shadow-sm">
-            <ChangePassword />
-          </div>
-        )}
-      </main>
+          )}
+
+          {activeTab === 2 && <ChangePassword />}
+
+          {activeTab === 3 && <EnrolledCourses user={user} />}
+        </main>
+      </div>
     </div>
   );
 };

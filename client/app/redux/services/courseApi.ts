@@ -23,6 +23,10 @@ const courseApi = api.injectEndpoints({
       providesTags: ["Course"],
     }),
 
+    getCourseContent: builder.query({
+      query: (courseId: string) => `/get-course-content/${courseId}`,
+    }),
+
     deleteCourse: builder.mutation<void, string>({
       query: (courseId: string) => ({
         url: `/delete-course/${courseId}`,
@@ -40,14 +44,45 @@ const courseApi = api.injectEndpoints({
       invalidatesTags: ["Course"],
     }),
 
-    editCourse: builder.mutation<
-      EditCourseResponse,
-      { id: string; data: any }
-    >({
+    editCourse: builder.mutation<EditCourseResponse, { id: string; data: unknown }>({
       query: ({ id, data }) => ({
         url: `/edit-course/${id}`,
         method: "PUT",
         body: data,
+      }),
+      invalidatesTags: ["Course"],
+    }),
+
+    addQuestion: builder.mutation<
+      { success: boolean; message: string },
+      { question: string; courseId: string; contentId: string }
+    >({
+      query: (body) => ({
+        url: "/add-question",
+        method: "POST",
+        body,
+      }),
+    }),
+
+    addQuestionAnswer: builder.mutation<
+      { success: boolean; message: string },
+      { question: string; courseId: string; contentId: string; questionId: string }
+    >({
+      query: (body) => ({
+        url: "/add-question-answer",
+        method: "POST",
+        body,
+      }),
+    }),
+
+    addReview: builder.mutation<
+      { success: boolean; message: string },
+      { courseId: string; review: string; rating: number }
+    >({
+      query: ({ courseId, ...body }) => ({
+        url: `/add-review/${courseId}`,
+        method: "POST",
+        body,
       }),
       invalidatesTags: ["Course"],
     }),
@@ -61,4 +96,8 @@ export const {
   useCreateCourseMutation,
   useEditCourseMutation,
   useDeleteCourseMutation,
+  useGetCourseContentQuery,
+  useAddQuestionMutation,
+  useAddQuestionAnswerMutation,
+  useAddReviewMutation,
 } = courseApi;

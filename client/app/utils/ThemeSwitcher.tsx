@@ -13,25 +13,21 @@ export const ThemeSwitcher = () => {
   }, []);
 
   if (!mounted) {
-    return null;
+    return <div className="w-9 h-9" />;
   }
 
   return (
-    <div className="flex items-center justify-center mx-4">
+    <button
+      type="button"
+      onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+      aria-label="Toggle theme"
+      className="flex h-9 w-9 items-center justify-center rounded-lg text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-slate-800 dark:hover:text-white"
+    >
       {theme === "light" ? (
-        <BiMoon
-          className="cursor-pointer"
-          fill="black"
-          size={25}
-          onClick={() => setTheme("dark")}
-        />
+        <BiMoon size={20} className="text-gray-700" />
       ) : (
-        <BiSun
-          size={25}
-          className="cursor-pointer"
-          onClick={() => setTheme("light")}
-        />
+        <BiSun size={20} className="text-amber-400" />
       )}
-    </div>
+    </button>
   );
 };

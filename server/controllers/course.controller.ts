@@ -190,6 +190,17 @@ export const getCourseByUser = asyncErrorHandler(
     }
 
     const course = await Course.findById(courseId);
+    const dataByContent = {};
+
+    course?.courseData.map((content) => {
+      if (dataByContent[content.videoSection]) {
+        dataByContent[content.videoSection].push(content);
+      } else {
+        dataByContent[content.videoSection] = [content];
+      }
+    });
+
+    console.log("dataByContent", dataByContent);
 
     if (!course) {
       return next(new ErrorHandler("Course not found", 404));
@@ -197,7 +208,7 @@ export const getCourseByUser = asyncErrorHandler(
 
     return res.status(200).json({
       success: true,
-      content: course.courseData,
+      content: dataByContent,
     });
   },
 );

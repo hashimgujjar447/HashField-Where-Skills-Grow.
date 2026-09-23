@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React from "react";
 import Link from "next/link";
@@ -155,16 +155,10 @@ const AdminSidebar: React.FC<Props> = ({ open, setOpen }) => {
         <div className="flex flex-col items-center px-5 py-5 shrink-0">
           <div className="relative">
             <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border-[3px] border-indigo-500 bg-slate-100 shadow-lg shadow-indigo-500/25 dark:bg-slate-700">
-              <Image
-                src=""
+              <img
+                src="https://ui-avatars.com/api/?name=Admin&background=6366f1&color=fff&size=80"
                 alt="Admin"
-                width={80}
-                height={80}
                 className="h-full w-full object-cover"
-                onError={(e) => {
-                  (e.currentTarget as HTMLImageElement).src =
-                    "https://ui-avatars.com/api/?name=Admin&background=6366f1&color=fff&size=80";
-                }}
               />
             </div>
             <span className="absolute bottom-0.5 right-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-green-500 dark:border-[#101936]" />

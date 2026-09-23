@@ -35,20 +35,12 @@ const ProfileInfo: FC<Props> = ({ user, avatar, setAvatar }) => {
   }, [user]);
 
   const getAvatarSrc = () => {
-    if (avatar) {
-      return avatar;
-    }
-
-    if (typeof user?.avatar === "string") {
-      return user.avatar;
-    }
-
-    if (user?.avatar?.url) {
-      return user.avatar.url;
-    }
-
+    if (avatar) return avatar;
+    if (typeof user?.avatar === "string") return user.avatar;
+    if (user?.avatar?.url) return user.avatar.url;
     return "/assets/avatar.jfif";
   };
+
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -75,7 +67,7 @@ const ProfileInfo: FC<Props> = ({ user, avatar, setAvatar }) => {
       return;
     }
     try {
-      await updateUserInfo({ name }).unwrap();
+      await updateUserInfo({ name: name.trim() }).unwrap();
       toast.success("Profile updated successfully");
     } catch (error: any) {
       toast.error(error?.data?.message || "Failed to update profile");
@@ -85,95 +77,101 @@ const ProfileInfo: FC<Props> = ({ user, avatar, setAvatar }) => {
   const isNameUnchanged = name.trim() === (user?.name || "").trim();
 
   return (
-    <div className="w-full flex flex-col items-center py-10 px-6">
-      {/* Avatar */}
-      <div className="relative mb-8 group">
-        <div className="w-28 h-28 rounded-full overflow-hidden ring-4 ring-[#37a39a] ring-offset-4 ring-offset-white dark:ring-offset-gray-900 shadow-lg">
-          <Image
-            src={getAvatarSrc()}
-            alt="Profile"
-            width={112}
-            height={112}
-            className="w-full h-full object-cover"
-          />
-        </div>
-
-        {isUpdatingAvatar ? (
-          <div className="absolute bottom-0 right-0 w-8 h-8 bg-[#37a39a] rounded-full flex items-center justify-center shadow-md">
-            <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-          </div>
-        ) : (
-          <button
-            type="button"
-            onClick={() => fileInputRef.current?.click()}
-            className="absolute bottom-0 right-0 w-8 h-8 bg-[#37a39a] hover:bg-[#2d8a82] rounded-full flex items-center justify-center shadow-md transition-colors duration-200 cursor-pointer"
-          >
-            <AiOutlineCamera size={16} className="text-white" />
-          </button>
-        )}
-
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          className="hidden"
-          onChange={handleImageChange}
-        />
+    <div className="w-full rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111827] p-4 sm:p-8 shadow-sm font-Poppins min-w-0">
+      <div className="mb-6 pb-4 border-b border-gray-100 dark:border-gray-800">
+        <h2 className="text-lg sm:text-xl font-bold font-Josefin text-gray-900 dark:text-white">
+          Profile Information
+        </h2>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+          Update your account photo and personal details
+        </p>
       </div>
 
-      {/* Form */}
-      <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-5">
-        {/* Name Field */}
-        <div className="space-y-1.5">
-          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 font-Poppins">
-            Full Name
-          </label>
+      <div className="flex flex-col items-center w-full">
+        {/* Avatar with edit button */}
+        <div className="relative mb-6">
+          <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden ring-4 ring-[#39c1f3]/30 shadow-md">
+            <Image
+              src={getAvatarSrc()}
+              alt="Profile"
+              width={112}
+              height={112}
+              className="w-full h-full object-cover"
+            />
+          </div>
+
+          {isUpdatingAvatar ? (
+            <div className="absolute bottom-0 right-0 w-8 h-8 bg-[#39c1f3] rounded-full flex items-center justify-center shadow-md">
+              <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              aria-label="Upload photo"
+              className="absolute bottom-0 right-0 w-8 h-8 bg-[#39c1f3] hover:bg-[#25addf] rounded-full flex items-center justify-center shadow-md transition-colors duration-200 cursor-pointer text-white"
+            >
+              <AiOutlineCamera size={16} />
+            </button>
+          )}
+
           <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Enter your full name"
-            className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-[#ffffff20] bg-white dark:bg-[#111827] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-[#37a39a] focus:border-transparent transition-all duration-200 font-Poppins text-sm"
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleImageChange}
           />
         </div>
 
-        {/* Email Field */}
-        <div className="space-y-1.5">
-          <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 font-Poppins">
-            Email Address
-          </label>
-          <div className="relative">
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="w-full max-w-md space-y-4 sm:space-y-5">
+          <div className="space-y-1.5">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+              Full Name
+            </label>
             <input
-              type="email"
-              value={user?.email || ""}
-              readOnly
-              className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-[#ffffff10] bg-gray-50 dark:bg-[#0d1117] text-gray-400 dark:text-gray-500 cursor-not-allowed font-Poppins text-sm"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Enter your full name"
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#0b0f17] text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-[#39c1f3] focus:ring-1 focus:ring-[#39c1f3] transition-all text-sm"
             />
-            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 dark:text-gray-600 bg-gray-100 dark:bg-[#1a2233] px-2 py-0.5 rounded font-Poppins">
-              Locked
-            </span>
           </div>
-        </div>
 
-        {/* Submit */}
-        <button
-          type="submit"
-          disabled={isUpdatingInfo || isNameUnchanged}
-          className="w-full py-3 px-6 rounded-lg font-semibold font-Poppins text-sm text-white transition-all duration-200 flex items-center justify-center gap-2 shadow-md
-            bg-gradient-to-r from-[#37a39a] to-[#2d8a82]
-            hover:from-[#2d8a82] hover:to-[#237870]
-            disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:from-[#37a39a] disabled:hover:to-[#2d8a82]"
-        >
-          {isUpdatingInfo ? (
-            <>
-              <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              Updating...
-            </>
-          ) : (
-            "Update Profile"
-          )}
-        </button>
-      </form>
+          <div className="space-y-1.5">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300">
+              Email Address
+            </label>
+            <div className="relative">
+              <input
+                type="email"
+                value={user?.email || ""}
+                readOnly
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-100 dark:bg-[#0d121c] text-gray-500 dark:text-gray-400 cursor-not-allowed text-sm"
+              />
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-semibold tracking-wide uppercase text-gray-500 dark:text-gray-400 bg-gray-200 dark:bg-gray-800 px-2 py-0.5 rounded">
+                Locked
+              </span>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            disabled={isUpdatingInfo || isNameUnchanged}
+            className="w-full py-3 px-6 rounded-xl font-medium text-sm text-white transition-all flex items-center justify-center gap-2 shadow-sm bg-[#39c1f3] hover:bg-[#25addf] disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            {isUpdatingInfo ? (
+              <>
+                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                <span>Updating...</span>
+              </>
+            ) : (
+              "Update Profile"
+            )}
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

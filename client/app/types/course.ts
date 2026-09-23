@@ -119,7 +119,7 @@ export interface EditCourseResponse {
 
 export interface GetCourseByUserResponse {
   success: boolean;
-  content: ICourseData[];
+  content: Record<string, ICourseData[]>;
 }
 
 export interface AddQuestionData {

@@ -1,5 +1,7 @@
 "use client";
 
+import toast from "react-hot-toast";
+
 import React, { useState } from "react";
 import Link from "next/link";
 import { AiFillStar } from "react-icons/ai";
@@ -28,6 +30,7 @@ import {
 
 import { Stripe } from "@stripe/stripe-js";
 import { useCreateOrderMutation } from "@/app/redux/features/order/orderApi";
+import { redirect } from "next/navigation";
 
 interface Props {
   course: ICourse;
@@ -179,8 +182,12 @@ const CourseDetails: React.FC<Props> = ({
   );
 
   const handleOrderNow = async () => {
+    if (!user) {
+      toast.error("Please log in to enroll in this course.");
+      return;
+    }
     if (isEnrolled) {
-      alert("You are already enrolled in this course.");
+      toast.error("You are already enrolled in this course.");
       return;
     }
 
@@ -191,16 +198,12 @@ const CourseDetails: React.FC<Props> = ({
 
     try {
       setPaymentLoading(true);
-
       const amount = Math.round(course.price * 100);
-
       await createPaymentIntent(amount);
-
       setOpen(true);
     } catch (error) {
       console.error("Failed to start payment:", error);
-
-      alert("Unable to start payment. Please try again.");
+      toast.error("Unable to start payment. Please try again.");
     } finally {
       setPaymentLoading(false);
     }
