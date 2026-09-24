@@ -52,7 +52,6 @@
 - 🧾 **Order management** — view all purchase records
 - 🔔 **Real-time notifications** via Socket.IO (new orders, questions, reviews)
 - 🎨 **Layout management** — edit Hero banner, FAQs, and course Categories
-- 🔁 Auto-delete read notifications older than **30 days** (node-cron)
 
 ---
 
@@ -368,8 +367,6 @@ All routes are prefixed with `/api/v1`
 | `PUT` | `/update-notification-status/:id` | ✅ | admin | Mark single notification as read |
 | `PUT` | `/update-all-notification` | ✅ | admin | Mark all notifications as read |
 
-> 🕛 A `node-cron` job runs **daily at midnight** and auto-deletes all read notifications older than 30 days.
-
 ---
 
 ### 📊 Analytics Routes
@@ -468,7 +465,6 @@ flowchart LR
 | Payments | Stripe (PaymentIntents API) |
 | Email | Nodemailer + EJS templates |
 | Real-time | Socket.IO v4 |
-| Scheduler | node-cron |
 | Dev Server | `tsx watch` |
 
 ### Frontend
@@ -594,20 +590,6 @@ Email templates are written in **EJS** and rendered server-side before sending v
 
 ---
 
-## ⚠️ Known Issues & Areas for Improvement
-
-| Area | Issue |
-|------|-------|
-| `course.controller.ts` L203 | `console.log("dataByContent", ...)` — debug log left in production code |
-| `course.controller.ts` L536 | `console.log(getAllCourseReviews)` — logs the function reference, not useful |
-| `user.route.ts` L21 | Imports `deleteUserById` from services but never uses it directly (already called via controller) — unused import |
-| `auth.middleware.ts` | `ACCESS_TOKEN_EXPIRE` env is parsed as hours but used inconsistently — double-check units match `.env` documentation |
-| `socketServer.ts` | No CORS config on Socket.IO — in production this may cause connection rejections from the browser client |
-| `order.model.ts` | `payment_info: Object` is too loose — consider a typed interface for Stripe payment data |
-| `layout.tsx` (client) | Imports `useLoadUserQuery` at the top level of a Server Component — `use client` directive is missing; this may cause a hydration warning |
-
----
-
 ## 🤝 Contributing
 
 1. Fork the repository
@@ -620,4 +602,4 @@ Email templates are written in **EJS** and rendered server-side before sending v
 
 ## 📜 License
 
-MIT © HashField — DevWeekends
+MIT © Muhammad Hashim

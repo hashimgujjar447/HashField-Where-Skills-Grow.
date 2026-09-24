@@ -18,7 +18,6 @@ import {
   authorizeRoles,
   isAuthenticated,
 } from "../middleware/auth.middleware.js";
-import { deleteUserById } from "../services/user.service.js";
 
 const router = Router();
 

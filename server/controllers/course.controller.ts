@@ -200,8 +200,6 @@ export const getCourseByUser = asyncErrorHandler(
       }
     });
 
-    console.log("dataByContent", dataByContent);
-
     if (!course) {
       return next(new ErrorHandler("Course not found", 404));
     }
@@ -532,8 +530,6 @@ export const getAllCourseReviews = asyncErrorHandler(
     try {
       const { id } = req.params;
       const course = await Course.findById(id);
-
-      console.log(getAllCourseReviews);
 
       const reviews = course?.reviews;
 

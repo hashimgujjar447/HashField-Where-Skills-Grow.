@@ -26,9 +26,9 @@ const Page: FC<Props> = () => {
   return (
     <div className="min-h-screen flex flex-col bg-white dark:bg-[#0b0f17] text-gray-900 dark:text-white transition-colors duration-300">
       <Heading
-        title="ELearn - Where Skills Grow | Online Learning Platform"
-        description="Access 40K+ modern technology, development, data science, and design courses taught by industry veterans."
-        keywords="lms, elearning, nextjs, react, typescript, programming, online courses"
+        title="HashField — Where Skills Grow | Online Learning Platform"
+        description="Explore expert-led courses on technology, development, data science, and design. Learn at your own pace with HashField."
+        keywords="hashfield, lms, elearning, nextjs, react, typescript, programming, online courses"
       />
 
       <Header open={open} setOpen={setOpen} activeItem={activeItem} />

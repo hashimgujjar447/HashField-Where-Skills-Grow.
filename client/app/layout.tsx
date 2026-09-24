@@ -4,7 +4,6 @@ import "./globals.css";
 import type { ReactNode } from "react";
 import Providers from "./providers";
 import { Toaster } from "react-hot-toast";
-import { useLoadUserQuery } from "./redux/services/api";
 import Custom from "./components/Custom";
 
 const poppins = Poppins({
@@ -20,9 +19,9 @@ const josefin = Josefin_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "ELearn",
-  description: "Learn with ELearn",
-  keywords: ["react", "typescript", "programming"],
+  title: "HashField — Where Skills Grow",
+  description: "Explore expert-led courses on technology, development, data science, and design. Learn at your own pace with HashField.",
+  keywords: ["hashfield", "lms", "elearning", "react", "typescript", "programming", "online courses"],
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
