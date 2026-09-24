@@ -174,7 +174,7 @@ const CourseContentMedia: React.FC<Props> = ({
     if (!reviewText.trim()) return;
 
     const isReviewAlreadyExist = courseReviews?.reviews.some(
-      (r) => r.user === user?._id,
+      (r) => (typeof r.user === "string" ? r.user : r.user._id) === user?._id,
     );
 
     if (isReviewAlreadyExist) {
@@ -478,7 +478,7 @@ const CourseContentMedia: React.FC<Props> = ({
                         <div className="flex-1">
                           <div className="flex items-center gap-2">
                             <p className="text-sm font-semibold text-gray-200">
-                              {review.user?.name || "Student"}
+                              {typeof review.user === "object" ? review.user.name : "Student"}
                             </p>
 
                             <div className="flex items-center gap-1">

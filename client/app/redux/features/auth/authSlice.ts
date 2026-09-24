@@ -4,7 +4,7 @@ interface User {
   _id?: string;
   name?: string;
   email?: string;
-  avatar?: string;
+  avatar?: string | { public_id: string; url: string };
   role?: string;
   [key: string]: unknown;
   courses: { courseId: string }[];

@@ -33,9 +33,16 @@ export interface IQuestion {
   questionReplies: IComment[];
 }
 
+export interface IReviewUser {
+  _id: string;
+  name: string;
+  email?: string;
+  avatar?: { public_id: string; url: string } | string;
+}
+
 export interface IReview {
   _id?: string;
-  user: string;
+  user: string | IReviewUser;
   comment: string;
   rating: number;
   commentReplies?: IComment[];

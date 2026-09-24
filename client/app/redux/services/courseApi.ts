@@ -4,7 +4,13 @@ import {
   GetAllCoursesForAdminResponse,
   GetAllCoursesResponse,
   GetSingleCourseResponse,
+  IReview,
 } from "@/app/types/course";
+
+export interface GetAllCourseReviewsResponse {
+  success: boolean;
+  reviews: IReview[];
+}
 
 const courseApi = api.injectEndpoints({
   endpoints: (builder) => ({
@@ -95,7 +101,7 @@ const courseApi = api.injectEndpoints({
       invalidatesTags: ["Course"],
     }),
 
-    getAllCourseReviews: builder.query({
+    getAllCourseReviews: builder.query<GetAllCourseReviewsResponse, string>({
       query: (courseId) => ({
         url: `${courseId}/get-all-reviews`,
         method: "GET",
