@@ -78,7 +78,7 @@ const Header: FC<Props> = ({ open, setOpen, activeItem }) => {
           href="/"
           className="font-Poppins text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
         >
-          ELearn<span className="text-[#39c1f3]">ing</span>
+          Hash<span className="text-[#39c1f3]">Field</span>
         </Link>
 
         <div className="flex items-center gap-3">
@@ -145,7 +145,7 @@ const Header: FC<Props> = ({ open, setOpen, activeItem }) => {
                 className="font-Poppins text-lg font-bold text-gray-900 dark:text-white"
                 onClick={() => setOpenSidebar(false)}
               >
-                ELearn<span className="text-[#39c1f3]">ing</span>
+                Hash<span className="text-[#39c1f3]">Field</span>
               </Link>
               <button
                 onClick={() => setOpenSidebar(false)}
