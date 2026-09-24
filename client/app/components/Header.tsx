@@ -25,14 +25,20 @@ const Header: FC<Props> = ({ open, setOpen, activeItem }) => {
   const { user } = useSelector(
     (state: {
       auth: {
-        user: { avatar?: { url?: string }; name?: string; role?: string } | null;
+        user: {
+          avatar?: { url?: string };
+          name?: string;
+          role?: string;
+        } | null;
       };
-    }) => state.auth
+    }) => state.auth,
   );
   const { data, status } = useSession();
 
-  const [socialAuth, { isSuccess: isSocialAuthSuccess, isLoading: isSocialAuthLoading }] =
-    useSocialAuthMutation();
+  const [
+    socialAuth,
+    { isSuccess: isSocialAuthSuccess, isLoading: isSocialAuthLoading },
+  ] = useSocialAuthMutation();
 
   useEffect(() => {
     if (status === "loading") return;
@@ -82,17 +88,22 @@ const Header: FC<Props> = ({ open, setOpen, activeItem }) => {
             <ThemeSwitcher />
 
             {user ? (
-              <Link href="/profile" className="flex items-center">
-                <Image
-                  src={user?.avatar?.url || "/assets/avatar.jfif"}
-                  alt={user?.name || "User Avatar"}
-                  width={34}
-                  height={34}
-                  className="rounded-full object-cover cursor-pointer ring-2 ring-transparent hover:ring-[#39c1f3] transition-all"
-                  style={{
-                    border: activeItem === 6 ? "2px solid #39c1f3" : "",
-                  }}
-                />
+              <Link href="/profile" className="flex  items-center">
+                <div
+                  className={`relative h-9 w-9 shrink-0 overflow-hidden rounded-full ${
+                    activeItem === 6
+                      ? "ring-2 ring-[#39c1f3]"
+                      : "ring-2 ring-transparent"
+                  } transition-all`}
+                >
+                  <Image
+                    src={user?.avatar?.url || "/assets/avatar.jfif"}
+                    alt={user?.name || "User Avatar"}
+                    fill
+                    sizes="36px"
+                    className="object-cover"
+                  />
+                </div>
               </Link>
             ) : (
               <button

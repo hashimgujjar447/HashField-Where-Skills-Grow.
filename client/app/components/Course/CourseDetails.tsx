@@ -2,7 +2,7 @@
 
 import toast from "react-hot-toast";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { AiFillStar } from "react-icons/ai";
 import { FaCheck } from "react-icons/fa";
@@ -31,7 +31,9 @@ import {
 import { Stripe } from "@stripe/stripe-js";
 import { useCreateOrderMutation } from "@/app/redux/features/order/orderApi";
 import { redirect } from "next/navigation";
-
+import socketIO from "socket.io-client";
+const ENDPOINT = process.env.NEXT_PUBLIC_SOCKET_SERVER_URI || "";
+const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
 interface Props {
   course: ICourse;
   clientSecret: string | null;
@@ -60,6 +62,8 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
     createOrder,
     { isLoading: isOrderLoading, isSuccess: isOrderSuccess },
   ] = useCreateOrderMutation();
+
+  const user = useSelector((state: RootState) => state.auth.user);
 
   const handlePayment = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -90,7 +94,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
         setSuccessMessage(
           "Payment successful! Your course enrollment will now be completed.",
         );
-        createOrder({
+        await createOrder({
           courseId: course._id,
           payment_info: result.paymentIntent,
         });
@@ -107,6 +111,18 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
 
     setLoading(false);
   };
+
+  useEffect(() => {
+    if (isOrderSuccess) {
+      socketId.emit("notification", {
+        title: "New Order",
+        message: `A new order has been placed for the course: ${course.title}`,
+        status: "unread",
+        userId: user?.id,
+      });
+      redirect(`/course-access/${course._id}`);
+    }
+  }, [isOrderSuccess, course._id, socketId]);
 
   return (
     <form onSubmit={handlePayment} className="space-y-5">
@@ -200,6 +216,7 @@ const CourseDetails: React.FC<Props> = ({
       setPaymentLoading(true);
       const amount = Math.round(course.price * 100);
       await createPaymentIntent(amount);
+
       setOpen(true);
     } catch (error) {
       console.error("Failed to start payment:", error);

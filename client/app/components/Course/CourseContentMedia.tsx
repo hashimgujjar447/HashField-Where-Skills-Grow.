@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   ChevronDown,
   PlayCircle,
@@ -21,6 +21,9 @@ import {
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
 import toast from "react-hot-toast";
+import socketIO from "socket.io-client";
+const ENDPOINT = process.env.NEXT_PUBLIC_SOCKET_SERVER_URI || "";
+const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
 
 type CourseContentBySection = Record<string, ICourseData[]>;
 type Tab = "overview" | "resources" | "questions" | "reviews";
@@ -183,6 +186,34 @@ const CourseContentMedia: React.FC<Props> = ({
     setReviewText("");
     setRating(1);
   };
+
+  useEffect(() => {
+    if (qSubmitting) {
+      socketId.emit("notification", {
+        title: "New Question",
+        message: `A new question has been asked in the course: ${activeLecture?.title}`,
+        status: "unread",
+        userId: user?._id,
+      });
+    }
+    if (rSubmitting) {
+      socketId.emit("notification", {
+        title: "New Reply",
+        message: `A new reply has been added to a question in the course: ${activeLecture?.title}`,
+        status: "unread",
+        userId: user?._id,
+      });
+    }
+
+    if (revSubmitting) {
+      socketId.emit("notification", {
+        title: "New Review",
+        message: `A new review has been added in the course: ${activeLecture?.title}`,
+        status: "unread",
+        userId: user?._id,
+      });
+    }
+  }, [qSubmitting, rSubmitting, revSubmitting, socketId]);
 
   if (!activeLecture) {
     return (

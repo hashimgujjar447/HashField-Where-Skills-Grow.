@@ -21,6 +21,7 @@ import {
   LogOut,
   X,
 } from "lucide-react";
+import { useLoadUserQuery } from "@/app/redux/services/api";
 
 type MenuItem = { title: string; icon: React.ReactNode; href: string };
 type MenuSection = { title: string; items: MenuItem[] };
@@ -114,6 +115,7 @@ type Props = {
 const AdminSidebar: React.FC<Props> = ({ open, setOpen }) => {
   const pathname = usePathname();
   const close = () => setOpen(false);
+  const { data } = useLoadUserQuery({});
 
   return (
     <>
@@ -141,7 +143,7 @@ const AdminSidebar: React.FC<Props> = ({ open, setOpen }) => {
       >
         <div className="flex items-center justify-between px-6 py-5 shrink-0 border-b border-slate-100 dark:border-slate-800/60">
           <h1 className="text-xl font-extrabold tracking-widest text-slate-900 dark:text-white">
-            ELEARNING
+            {data?.user?.name || "Admin"}
           </h1>
           <button
             onClick={close}
@@ -156,7 +158,9 @@ const AdminSidebar: React.FC<Props> = ({ open, setOpen }) => {
           <div className="relative">
             <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border-[3px] border-indigo-500 bg-slate-100 shadow-lg shadow-indigo-500/25 dark:bg-slate-700">
               <img
-                src="https://ui-avatars.com/api/?name=Admin&background=6366f1&color=fff&size=80"
+                src={
+                  data?.user?.avatar?.url || "/images/avatar-placeholder.png"
+                }
                 alt="Admin"
                 className="h-full w-full object-cover"
               />
@@ -164,7 +168,7 @@ const AdminSidebar: React.FC<Props> = ({ open, setOpen }) => {
             <span className="absolute bottom-0.5 right-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-green-500 dark:border-[#101936]" />
           </div>
           <p className="mt-3 text-base font-semibold text-slate-900 dark:text-white">
-            Admin
+            {data?.user?.name || "Admin"}
           </p>
           <p className="text-xs text-slate-500 dark:text-slate-400">
             Administrator
