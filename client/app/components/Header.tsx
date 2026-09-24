@@ -138,7 +138,7 @@ const Header: FC<Props> = ({ open, setOpen, activeItem }) => {
           onClick={handleClose}
           id="screen"
         >
-          <div className="fixed right-0 top-0 z-[999999] flex h-screen w-[78%] max-w-[320px] flex-col bg-white shadow-2xl dark:bg-[#0d1526] sm:w-[60%]">
+          <div className="fixed right-0 top-0 z-[999999] flex h-full w-[78%] max-w-[320px] flex-col bg-white shadow-2xl dark:bg-[#0d1526] sm:w-[60%]">
             <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4 dark:border-gray-800">
               <Link
                 href="/"

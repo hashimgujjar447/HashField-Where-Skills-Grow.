@@ -173,13 +173,67 @@ export const loginUser = asyncErrorHandler(
 
 export const logoutUser = asyncErrorHandler(
   async (req: Request, res: Response) => {
-    res.clearCookie("accessToken", { httpOnly: true, sameSite: "lax" });
-    res.clearCookie("refreshToken", { httpOnly: true, sameSite: "lax" });
+    const isProduction = process.env.NODE_ENV === "production";
+    const cookieOptions = {
+      httpOnly: true,
+      sameSite: (isProduction ? "none" : "lax") as any,
+      secure: isProduction,
+      path: "/",
+    };
 
-    const userId = req.user?._id?.toString();
+    let userId = req.user?._id?.toString();
+
+    if (!userId && req.cookies?.refreshToken) {
+      try {
+        const decoded = jwt.verify(
+          req.cookies.refreshToken,
+          process.env.REFRESH_TOKEN as Secret,
+        ) as JwtPayload;
+        if (decoded?.id) {
+          userId = decoded.id as string;
+        }
+      } catch {
+        try {
+          const decoded = jwt.decode(req.cookies.refreshToken) as any;
+          if (decoded?.id) userId = decoded.id;
+        } catch {}
+      }
+    }
+
+    if (!userId && req.cookies?.accessToken) {
+      try {
+        const decoded = jwt.verify(
+          req.cookies.accessToken,
+          process.env.ACCESS_TOKEN as Secret,
+        ) as JwtPayload;
+        if (decoded?.id) {
+          userId = decoded.id as string;
+        }
+      } catch {
+        try {
+          const decoded = jwt.decode(req.cookies.accessToken) as any;
+          if (decoded?.id) userId = decoded.id;
+        } catch {}
+      }
+    }
+
     if (userId) {
       await redis.del(userId);
     }
+
+    res.clearCookie("accessToken", cookieOptions);
+    res.clearCookie("refreshToken", cookieOptions);
+
+    res.cookie("accessToken", "", {
+      ...cookieOptions,
+      expires: new Date(0),
+      maxAge: 0,
+    });
+    res.cookie("refreshToken", "", {
+      ...cookieOptions,
+      expires: new Date(0),
+      maxAge: 0,
+    });
 
     return res.status(200).json({
       success: true,
@@ -243,12 +297,14 @@ export const updateAccessToken = asyncErrorHandler(
         10,
       );
 
+      const isProduction = process.env.NODE_ENV === "production";
+
       const accessTokenOptions: ITokenOptions = {
         expires: new Date(Date.now() + accessTokenExpiry * 60 * 60 * 1000),
         maxAge: accessTokenExpiry * 60 * 60 * 1000,
         httpOnly: true,
-        sameSite: "lax",
-        secure: process.env.NODE_ENV === "production",
+        sameSite: isProduction ? "none" : "lax",
+        secure: isProduction,
       };
 
       const refreshTokenOptions: ITokenOptions = {
@@ -257,8 +313,8 @@ export const updateAccessToken = asyncErrorHandler(
         ),
         maxAge: refreshTokenExpiry * 24 * 60 * 60 * 1000,
         httpOnly: true,
-        sameSite: "lax",
-        secure: process.env.NODE_ENV === "production",
+        sameSite: isProduction ? "none" : "lax",
+        secure: isProduction,
       };
 
       req.user = user;

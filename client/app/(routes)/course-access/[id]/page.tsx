@@ -2,6 +2,8 @@
 
 import React, { useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/redux/store";
 import CourseSections from "@/app/components/Course/CourseSections";
 import { useLoadUserQuery } from "@/app/redux/services/api";
 
@@ -11,26 +13,34 @@ const CourseAccessPage = () => {
 
   const courseId = params?.id as string;
 
-  const { data, isLoading, isError } = useLoadUserQuery({});
+  const authUser = useSelector((state: RootState) => state.auth.user);
+  const { data, isLoading, isError } = useLoadUserQuery(
+    {},
+    { refetchOnMountOrArgChange: true },
+  );
+
+  const user = data?.user || authUser;
+
+  const isUserEnrolled = user?.courses?.some((course: any) => {
+    const enrolledId =
+      course?.courseId?._id || course?.courseId || course?._id || course;
+    return String(enrolledId) === String(courseId);
+  });
 
   useEffect(() => {
     if (isLoading || !courseId) return;
 
-    if (isError || !data?.user) {
-      router.replace("/login");
+    if (!user && (isError || !isLoading)) {
+      router.replace("/");
       return;
     }
 
-    const isUserEnrolled = data.user.courses?.some(
-      (course: { courseId: string }) => String(course.courseId) === String(courseId),
-    );
-
-    if (!isUserEnrolled) {
+    if (user && !isUserEnrolled && !isLoading) {
       router.replace("/courses");
     }
-  }, [data, isLoading, isError, courseId, router]);
+  }, [user, isLoading, isError, courseId, isUserEnrolled, router]);
 
-  if (isLoading) {
+  if (isLoading || (!user && !isError)) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-white dark:bg-[#0a0f1c]">
         <div className="h-10 w-10 animate-spin rounded-full border-4 border-slate-200 border-t-indigo-600 dark:border-slate-700 dark:border-t-indigo-400" />
@@ -38,15 +48,7 @@ const CourseAccessPage = () => {
     );
   }
 
-  if (isError || !data?.user || !courseId) {
-    return null;
-  }
-
-  const isUserEnrolled = data.user.courses?.some(
-    (course: { courseId: string }) => String(course.courseId) === String(courseId),
-  );
-
-  if (!isUserEnrolled) {
+  if (!user || !isUserEnrolled || !courseId) {
     return null;
   }
 

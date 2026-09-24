@@ -39,6 +39,7 @@ export const api = createApi({
         url: "/me",
         method: "GET",
       }),
+      providesTags: ["User"],
 
       async onQueryStarted(_arg, { queryFulfilled, dispatch }) {
         try {

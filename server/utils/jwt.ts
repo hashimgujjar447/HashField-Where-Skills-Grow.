@@ -33,24 +33,27 @@ export const sendToken = async (
     10,
   );
 
+  const isProduction = process.env.NODE_ENV === "production";
+
   const accessTokenOptions: ITokenOptions = {
     expires: new Date(Date.now() + accessTokenExpiry * 60 * 60 * 1000),
     maxAge: accessTokenExpiry * 60 * 60 * 1000,
     httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    // 👇 Cross-domain ke liye production mein "none" lazmi hai
+    sameSite: isProduction ? "none" : "lax",
+    secure: isProduction ? true : false,
   };
 
   const refreshTokenOptions: ITokenOptions = {
     expires: new Date(Date.now() + refreshTokenExpiry * 24 * 60 * 60 * 1000),
     maxAge: refreshTokenExpiry * 24 * 60 * 60 * 1000,
     httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    // 👇 Cross-domain ke liye production mein "none" lazmi hai
+    sameSite: isProduction ? "none" : "lax",
+    secure: isProduction ? true : false,
   };
 
   res.cookie("accessToken", accessToken, accessTokenOptions);
-
   res.cookie("refreshToken", refreshToken, refreshTokenOptions);
 
   return res.status(statusCode).json({

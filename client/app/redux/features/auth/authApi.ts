@@ -100,10 +100,11 @@ export const authApi = api.injectEndpoints({
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
         try {
           await queryFulfilled;
-
+        } catch {
+        } finally {
           dispatch(userLoggedOut());
           dispatch(api.util.resetApiState());
-        } catch {}
+        }
       },
     }),
 
@@ -131,10 +132,15 @@ export const authApi = api.injectEndpoints({
         credentials: "include",
       }),
 
-      async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+      async onQueryStarted(arg, { queryFulfilled, dispatch, getState }) {
         try {
           const result = await queryFulfilled;
-          dispatch(setUser({ user: result.data.user }));
+          // Server returns { success, message, avatar } — not a full user object.
+          // Patch only the avatar field in the existing Redux user state.
+          const currentUser = (getState() as any).auth.user;
+          if (currentUser && result.data.avatar) {
+            dispatch(setUser({ user: { ...currentUser, avatar: result.data.avatar } }));
+          }
         } catch {}
       },
     }),

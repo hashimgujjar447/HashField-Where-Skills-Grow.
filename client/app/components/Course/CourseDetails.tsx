@@ -30,7 +30,7 @@ import {
 
 import { Stripe } from "@stripe/stripe-js";
 import { useCreateOrderMutation } from "@/app/redux/features/order/orderApi";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import socketIO from "socket.io-client";
 const ENDPOINT = process.env.NEXT_PUBLIC_SOCKET_SERVER_URI || "";
 const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
@@ -112,17 +112,19 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
     setLoading(false);
   };
 
+  const router = useRouter();
+
   useEffect(() => {
     if (isOrderSuccess) {
       socketId.emit("notification", {
         title: "New Order",
         message: `A new order has been placed for the course: ${course.title}`,
         status: "unread",
-        userId: user?.id,
+        userId: user?._id || user?.id,
       });
-      redirect(`/course-access/${course._id}`);
+      router.push(`/course-access/${course._id}`);
     }
-  }, [isOrderSuccess, course._id, socketId]);
+  }, [isOrderSuccess, course._id, router, user]);
 
   return (
     <form onSubmit={handlePayment} className="space-y-5">

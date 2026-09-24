@@ -22,6 +22,8 @@ import {
   X,
 } from "lucide-react";
 import { useLoadUserQuery } from "@/app/redux/services/api";
+import { useLogoutMutation } from "@/app/redux/features/auth/authApi";
+import { signOut } from "next-auth/react";
 
 type MenuItem = { title: string; icon: React.ReactNode; href: string };
 type MenuSection = { title: string; items: MenuItem[] };
@@ -116,6 +118,19 @@ const AdminSidebar: React.FC<Props> = ({ open, setOpen }) => {
   const pathname = usePathname();
   const close = () => setOpen(false);
   const { data } = useLoadUserQuery({});
+  const [logout] = useLogoutMutation();
+
+  const handleLogout = async () => {
+    try {
+      await logout(undefined).unwrap();
+    } catch {}
+
+    try {
+      await signOut({ callbackUrl: "/" });
+    } catch {
+      window.location.href = "/";
+    }
+  };
 
   return (
     <>
@@ -229,7 +244,7 @@ const AdminSidebar: React.FC<Props> = ({ open, setOpen }) => {
           <div className="mt-2 border-t border-slate-100 pt-3 dark:border-slate-800">
             <button
               className="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-slate-600 transition-all duration-150 hover:bg-red-50 hover:text-red-600 dark:text-slate-300 dark:hover:bg-red-500/10 dark:hover:text-red-400"
-              onClick={() => {}}
+              onClick={handleLogout}
             >
               <LogOut
                 size={18}

@@ -52,18 +52,20 @@ const refreshAndContinue = async (
   const accessTokenExpiry = parseInt(process.env.ACCESS_TOKEN_EXPIRE || "300", 10);
   const refreshTokenExpiry = parseInt(process.env.REFRESH_TOKEN_EXPIRE || "1200", 10);
 
+  const isProduction = process.env.NODE_ENV === "production";
+
   res.cookie("accessToken", newAccessToken, {
     httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    sameSite: isProduction ? "none" : "lax",
+    secure: isProduction,
     expires: new Date(Date.now() + accessTokenExpiry * 60 * 60 * 1000),
     maxAge: accessTokenExpiry * 60 * 60 * 1000,
   });
 
   res.cookie("refreshToken", newRefreshToken, {
     httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    sameSite: isProduction ? "none" : "lax",
+    secure: isProduction,
     expires: new Date(Date.now() + refreshTokenExpiry * 24 * 60 * 60 * 1000),
     maxAge: refreshTokenExpiry * 24 * 60 * 60 * 1000,
   });

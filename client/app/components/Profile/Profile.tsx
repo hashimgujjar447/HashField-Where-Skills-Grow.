@@ -22,9 +22,10 @@ const Profile: FC<Props> = ({ user }) => {
   const logoutHandler = async () => {
     try {
       await logout(undefined).unwrap();
-      await signOut({ redirect: false });
-      toast.success("Logout successful");
-      window.location.href = "/";
+    } catch {}
+
+    try {
+      await signOut({ callbackUrl: "/" });
     } catch {
       window.location.href = "/";
     }
