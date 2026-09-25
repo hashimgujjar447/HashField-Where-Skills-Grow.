@@ -183,9 +183,11 @@ const CourseDetails: React.FC<Props> = ({
   createPaymentIntent,
 }) => {
   const user = useSelector((state: RootState) => state.auth.user);
+  const router = useRouter();
 
   const [open, setOpen] = useState(false);
   const [paymentLoading, setPaymentLoading] = useState(false);
+  const [createOrder, { isLoading: isOrderLoading }] = useCreateOrderMutation();
 
   const discount =
     course.estimatedPrice && course.estimatedPrice > course.price
@@ -195,8 +197,10 @@ const CourseDetails: React.FC<Props> = ({
         )
       : 0;
 
-  const isEnrolled = user?.courses?.find(
-    (c) => c?.courseId?.toString() === course._id?.toString(),
+  const isEnrolled = user?.courses?.some(
+    (c: any) =>
+      String(c?.courseId?._id || c?.courseId || c?._id || c) ===
+      String(course?._id),
   );
 
   const handleOrderNow = async () => {
@@ -539,10 +543,35 @@ const CourseDetails: React.FC<Props> = ({
 
                 <button
                   type="button"
-                  onClick={() => setOpen(false)}
-                  className="mt-6 rounded-xl bg-[#39c1f3] px-6 py-3 text-sm font-medium text-white hover:bg-[#25addf]"
+                  disabled={isOrderLoading}
+                  onClick={async () => {
+                    try {
+                      await createOrder({
+                        courseId: course._id,
+                        payment_info: null,
+                      }).unwrap();
+
+                      socketId.emit("notification", {
+                        title: "New Order",
+                        message: `A new order has been placed for the course: ${course.title}`,
+                        status: "unread",
+                        userId: user?._id || user?.id,
+                      });
+
+                      toast.success("Successfully enrolled in the course!");
+                      setOpen(false);
+                      router.push(`/course-access/${course._id}`);
+                    } catch (error: any) {
+                      console.error("Failed to enroll in free course:", error);
+                      toast.error(
+                        error?.data?.message ||
+                          "Unable to enroll in the course. Please try again.",
+                      );
+                    }
+                  }}
+                  className="mt-6 rounded-xl bg-[#39c1f3] px-6 py-3 text-sm font-medium text-white transition hover:bg-[#25addf] disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  Continue
+                  {isOrderLoading ? "Enrolling..." : "Continue"}
                 </button>
               </div>
             ) : clientSecret && stripePromise ? (
